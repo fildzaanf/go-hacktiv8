@@ -20,6 +20,16 @@ func NewHandler(serviceInterface entity.ServiceInterface) *handler {
 	}
 }
 
+// CreateOrder godoc
+// @Summary Create a new order
+// @Description Create a new order with the provided order data
+// @ID create-order
+// @Accept json
+// @Produce json
+// @Param orderRequest body OrderRequest true "Order data"
+// @Success 201 {object} OrderResponse "Successfully created"
+// @Failure 400 {object} ErrorResponse "Bad request"
+// @Router /orders [post]
 func (oh *handler) CreateOrder(c *gin.Context) {
 	orderRequest := request.OrderRequest{}
 
@@ -42,6 +52,14 @@ func (oh *handler) CreateOrder(c *gin.Context) {
 	c.JSON(http.StatusCreated, responses.SuccessResponse("data created successfully", response))
 }
 
+// GetAllOrders godoc
+// @Summary Get all orders
+// @Description Retrieve all orders
+// @Tags orders
+// @Produce json
+// @Success 200 {object} SuccessResponse
+// @Failure 500 {object} ErrorResponse
+// @Router /orders [get]
 func (oh *handler) GetAllOrders(c *gin.Context) {
 	orders, errGetAll := oh.serviceInterface.GetAllOrders()
 	if errGetAll != nil {
@@ -59,6 +77,15 @@ func (oh *handler) GetAllOrders(c *gin.Context) {
 	c.JSON(http.StatusOK, responses.SuccessResponse("data retrieved successfully", response))
 }
 
+// GetOrderByID godoc
+// @Summary Get order by ID
+// @Description Retrieve order details by order ID
+// @Tags orders
+// @Produce json
+// @Param order_id path string true "Order ID"
+// @Success 200 {object} OrderResponse
+// @Failure 500 {object} ErrorResponse
+// @Router /orders/{order_id} [get]
 func (oh *handler) GetOrderByID(c *gin.Context) {
 	orderID := c.Param("order_id")
 
@@ -73,6 +100,18 @@ func (oh *handler) GetOrderByID(c *gin.Context) {
 	c.JSON(http.StatusOK, responses.SuccessResponse("data retrieved successfully", response))
 }
 
+// UpdateOrderByID godoc
+// @Summary Update order by ID
+// @Description Update order details by order ID
+// @Tags orders
+// @Accept json
+// @Produce json
+// @Param order_id path string true "Order ID"
+// @Param request body UpdateOrderRequest true "Order details"
+// @Success 200 {object} OrderResponse
+// @Failure 400 {object} ErrorResponse
+// @Failure 500 {object} ErrorResponse
+// @Router /orders/{order_id} [put]
 func (oh *handler) UpdateOrderByID(c *gin.Context) {
 	orderRequest := request.UpdateOrderRequest{}
 
@@ -96,6 +135,15 @@ func (oh *handler) UpdateOrderByID(c *gin.Context) {
 	c.JSON(http.StatusOK, responses.SuccessResponse("data updated successfully", response))
 }
 
+// DeleteOrderByID godoc
+// @Summary Delete order by ID
+// @Description Delete order by order ID
+// @Tags orders
+// @Produce json
+// @Param order_id path string true "Order ID"
+// @Success 200 {object} SuccessResponse
+// @Failure 500 {object} ErrorResponse
+// @Router /orders/{order_id} [delete]
 func (oh *handler) DeleteOrderByID(c *gin.Context) {
 	orderID := c.Param("order_id")
 	errDelete := oh.serviceInterface.DeleteOrderByID(orderID)

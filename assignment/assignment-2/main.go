@@ -4,13 +4,25 @@ import (
 	"assignment-2/app/configs"
 	"assignment-2/app/databases/postgresql"
 	"assignment-2/app/routes"
+
+	// _ "assignment-2/docs"
 	"assignment-2/middlewares"
 	"log"
 
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 	"github.com/sirupsen/logrus"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
+	"github.com/swaggo/swag/example/basic/docs"
 )
+
+// @title Orders API
+// @version 1.0
+// @description This is a simple service for managing orders
+// @termsOfService http://swagger.io/terms/
+// @host localhost:8000
+// @BasePath /
 
 func main() {
 	godotenv.Load()
@@ -19,13 +31,20 @@ func main() {
 		logrus.Fatalf("failed to load configuration: %v", err)
 	}
 
-	db := postgresql.ConnectPostgreSQL()
+	docs.SwaggerInfo.Title = "Swagger Orders API"
+	docs.SwaggerInfo.Description = "This is a simple service for managing orders."
+	docs.SwaggerInfo.Version = "1.0"
+	docs.SwaggerInfo.Host = "localhost:8000"
+	docs.SwaggerInfo.BasePath = "/"
+	docs.SwaggerInfo.Schemes = []string{"http", "https"}
 
+	db := postgresql.ConnectPostgreSQL()
 	r := gin.Default()
 
 	middlewares.Logger(r)
-  
-    routes.SetupRoutes(r, db)
+
+	routes.SetupRoutes(r, db)
+	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	host := config.SERVER.SERVER_HOST
 	port := config.SERVER.SERVER_PORT

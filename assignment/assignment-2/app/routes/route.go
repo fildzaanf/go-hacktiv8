@@ -10,3 +10,4 @@ func SetupRoutes(r *gin.Engine, db *gorm.DB) {
 	OrderRoutes(route, db)
 	ItemRoutes(route, db)
 }
+
