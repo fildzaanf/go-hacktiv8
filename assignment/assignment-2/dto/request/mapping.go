@@ -10,6 +10,14 @@ func OrderRequestToOrderCore(orderRequest OrderRequest) entity.Order {
 	}
 }
 
+func UpdateOrderRequestToOrderCore(orderRequest UpdateOrderRequest) entity.Order {
+	return entity.Order{
+		OrderedAt:    orderRequest.OrderedAt,
+		CustomerName: orderRequest.CustomerName,
+		Items:        ListUpdateItemRequestToItemCore(orderRequest.Items),
+	}
+}
+
 func ItemRequestToItemCore(itemRequest ItemRequest) entity.Item {
 	return entity.Item{
 		ItemCode:    itemRequest.ItemCode,
@@ -31,6 +39,15 @@ func ListItemRequestToItemCore(itemRequest []ItemRequest) []entity.Item {
 	listItemCore := []entity.Item{}
 	for _, item := range itemRequest {
 		itemCore := ItemRequestToItemCore(item)
+		listItemCore = append(listItemCore, itemCore)
+	}
+	return listItemCore
+}
+
+func ListUpdateItemRequestToItemCore(itemRequest []UpdateItemRequest) []entity.Item {
+	listItemCore := []entity.Item{}
+	for _, item := range itemRequest {
+		itemCore := UpdateItemRequestToItemCore(item)
 		listItemCore = append(listItemCore, itemCore)
 	}
 	return listItemCore

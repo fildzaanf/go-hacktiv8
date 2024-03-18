@@ -11,6 +11,17 @@ func OrderCoreToOrderResponse(orderCore entity.Order) OrderResponse {
 	}
 }
 
+
+func ListOrdeCoreToOrderResponse(orderCore []entity.Order) []OrderResponse {
+	listOrderResponse := []OrderResponse{}
+	for _, order := range orderCore {
+		OrderResponse := OrderCoreToOrderResponse(order)
+		listOrderResponse = append(listOrderResponse, OrderResponse)
+	}
+	return listOrderResponse
+}
+
+
 func ItemCoreToItemResponse(itemCore entity.Item) ItemResponse {
 	return ItemResponse{
 		ID:          itemCore.ID,
@@ -28,3 +39,4 @@ func ListItemCoreToItemResponse(itemCore []entity.Item) []ItemResponse {
 	}
 	return listItemResponse
 }
+

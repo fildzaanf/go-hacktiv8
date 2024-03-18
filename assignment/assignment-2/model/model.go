@@ -10,7 +10,7 @@ type Order struct {
 	ID           string    `gorm:"primaryKey"`
 	CustomerName string    `gorm:"not null"`
 	OrderedAt    time.Time `gorm:"type:timestamp;default:now()"`
-	Items        []Item
+	Items        []Item    `gorm:"foreignKey:OrderID;references:ID"`
 	CreatedAt    time.Time
 	UpdatedAt    time.Time
 	DeletedAt    gorm.DeletedAt `gorm:"index"`
@@ -18,7 +18,7 @@ type Order struct {
 
 type Item struct {
 	ID          string `gorm:"primaryKey"`
-	ItemCode    string `gorm:"not null;unique"`
+	ItemCode    string `gorm:"not null"`
 	Description string `gorm:"not null"`
 	Quantity    int    `gorm:"not null"`
 	OrderID     string

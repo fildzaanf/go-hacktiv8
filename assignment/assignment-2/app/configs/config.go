@@ -9,7 +9,6 @@ import (
 
 type Configuration struct {
 	POSTGRESQL PostgreSQLConfig
-	JWT        JWTConfig
 	SERVER     ServerConfig
 }
 
@@ -18,11 +17,7 @@ type PostgreSQLConfig struct {
 	POSTGRESQL_PASS string
 	POSTGRESQL_HOST string
 	POSTGRESQL_PORT string
-	POSTGRESQL_NAME  string
-}
-
-type JWTConfig struct {
-	JWT_SECRET string
+	POSTGRESQL_NAME string
 }
 
 type ServerConfig struct {
@@ -49,9 +44,6 @@ func LoadConfig() (*Configuration, error) {
 			POSTGRESQL_HOST: os.Getenv("POSTGRESQL_HOST"),
 			POSTGRESQL_PORT: os.Getenv("POSTGRESQL_PORT"),
 			POSTGRESQL_NAME: os.Getenv("POSTGRESQL_NAME"),
-		},
-		JWT: JWTConfig{
-			JWT_SECRET: os.Getenv("JWT_SECRET"),
 		},
 		SERVER: ServerConfig{
 			SERVER_HOST: os.Getenv("SERVER_HOST"),

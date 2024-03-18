@@ -1,10 +1,12 @@
 package routes
 
 import (
-	"github.com/labstack/echo/v4"
+	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 )
 
-func SetupRoutes(e *echo.Echo, db *gorm.DB) {
-
+func SetupRoutes(r *gin.Engine, db *gorm.DB) {
+	route := r.Group("")
+	OrderRoutes(route, db)
+	ItemRoutes(route, db)
 }
