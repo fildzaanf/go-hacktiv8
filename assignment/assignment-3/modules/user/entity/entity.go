@@ -12,7 +12,7 @@ type User struct {
 	Fullname  string
 	Email     string
 	Password  string
-	OrderID   []entity.Order
+	Orders    []entity.Order
 	CreatedAt time.Time
 	UpdatedAt time.Time
 	DeletedAt gorm.DeletedAt

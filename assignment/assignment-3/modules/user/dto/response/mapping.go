@@ -1,6 +1,9 @@
 package response
 
-import "assignment-2/modules/user/entity"
+import (
+	or "assignment-2/modules/order/dto/response"
+	"assignment-2/modules/user/entity"
+)
 
 func UserCoreToUserRegisterResponse(response entity.User) UserRegisterResponse {
 	return UserRegisterResponse{
@@ -19,10 +22,11 @@ func UserCoreToUserLoginResponse(response entity.User, token string) UserLoginRe
 	}
 }
 
-func UserCoreToUserProfileResponse(response entity.User) UserProfileResponse {
-	return UserProfileResponse{
+func UserCoreToUserResponse(response entity.User) UserResponse {
+	return UserResponse{
 		ID:       response.ID,
 		Fullname: response.Fullname,
 		Email:    response.Email,
+		Orders:   or.ListOrdeCoreToOrderResponse(response.Orders),
 	}
 }

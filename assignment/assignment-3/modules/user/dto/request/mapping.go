@@ -17,7 +17,7 @@ func UserLoginRequestToUserCore(request UserLoginRequest) entity.User {
 	}
 }
 
-func UserUpdateProfileRequestToUserCore(request UserUpdateProfileRequest) entity.User {
+func UserRequestToUserCore(request UserRequest) entity.User {
 	return entity.User{
 		Fullname: request.Fullname,
 		Email:    request.Email,

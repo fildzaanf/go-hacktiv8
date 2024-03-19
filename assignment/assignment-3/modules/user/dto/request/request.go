@@ -11,7 +11,7 @@ type UserLoginRequest struct {
 	Password string `json:"password" form:"password"`
 }
 
-type UserUpdateProfileRequest struct {
+type UserRequest struct {
 	Fullname string `json:"fullname" form:"fullname"`
 	Email    string `json:"email" form:"email"`
 	Password string `json:"password" form:"password"`
