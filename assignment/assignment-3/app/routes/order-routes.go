@@ -1,6 +1,7 @@
 package routes
 
 import (
+	"assignment-2/middlewares"
 	"assignment-2/modules/order/handler"
 	"assignment-2/modules/order/repository"
 	"assignment-2/modules/order/service"
@@ -14,7 +15,7 @@ func OrderRoutes(r *gin.RouterGroup, db *gorm.DB) {
 	orderService := service.NewOrderService(orderRepository)
 	orderHandler := handler.NewOrderHandler(orderService)
 
-	order := r.Group("/orders")
+	order := r.Group("/orders", middlewares.JWTMiddleware())
 	{
 		order.POST("", orderHandler.CreateOrder)
 		order.GET("", orderHandler.GetAllOrders)

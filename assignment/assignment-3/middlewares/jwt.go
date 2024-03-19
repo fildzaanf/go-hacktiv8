@@ -74,5 +74,3 @@ func VerifyToken(c *gin.Context) (string, string, error) {
 
 	return id, role, nil
 }
-
-

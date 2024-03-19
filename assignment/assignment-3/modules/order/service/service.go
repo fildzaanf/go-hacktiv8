@@ -37,8 +37,8 @@ func (os *orderService) CreateOrder(orderCore entity.Order) (entity.Order, error
 	return createOrder, nil
 }
 
-func (os *orderService) GetAllOrders() ([]entity.Order, error) {
-	getAllOrders, errGetAllOrdersRepo := os.repositoryInterface.GetAllOrders()
+func (os *orderService) GetAllOrders(userID string) ([]entity.Order, error) {
+	getAllOrders, errGetAllOrdersRepo := os.repositoryInterface.GetAllOrders(userID)
 	if errGetAllOrdersRepo != nil {
 		return nil, errGetAllOrdersRepo
 	}

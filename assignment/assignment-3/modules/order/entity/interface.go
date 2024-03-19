@@ -4,7 +4,7 @@ import "github.com/gin-gonic/gin"
 
 type OrderRepositoryInterface interface {
 	CreateOrder(orderCore Order) (Order, error)
-	GetAllOrders() ([]Order, error)
+	GetAllOrders(userID string) ([]Order, error)
 	GetOrderByID(orderID string) (Order, error)
 	UpdateOrderByID(orderID string, orderCore Order) (Order, error)
 	DeleteOrderByID(orderID string) error
@@ -17,7 +17,7 @@ type OrderRepositoryInterface interface {
 
 type OrderServiceInterface interface {
 	CreateOrder(orderCore Order) (Order, error)
-	GetAllOrders() ([]Order, error)
+	GetAllOrders(userID string) ([]Order, error)
 	GetOrderByID(orderID string) (Order, error)
 	UpdateOrderByID(orderID string, orderCore Order) (Order, error)
 	DeleteOrderByID(orderID string) error
@@ -34,9 +34,4 @@ type OrderHandlerInterface interface {
 	GetOrderByID(c gin.Context)
 	UpdateOrderByID(c gin.Context)
 	DeleteOrderByID(c gin.Context)
-	CreateItem(c gin.Context)
-	GetAllItems(c gin.Context)
-	GetItemByID(c gin.Context)
-	UpdateItemByID(c gin.Context)
-	DeleteItemByID(c gin.Context)
 }

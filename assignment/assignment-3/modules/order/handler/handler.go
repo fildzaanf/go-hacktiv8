@@ -33,7 +33,8 @@ func NewOrderHandler(serviceInterface entity.OrderServiceInterface) *orderHandle
 // @Failure 400 {object} responses.TErrorResponse
 // @Router /orders [post]
 func (oh *orderHandler) CreateOrder(c *gin.Context) {
-	_, role, errExtract := middlewares.VerifyToken(c)
+
+	userID, role, errExtract := middlewares.VerifyToken(c)
 	if errExtract != nil {
 		c.JSON(http.StatusUnauthorized, responses.ErrorResponse(errExtract.Error()))
 		return
@@ -52,6 +53,8 @@ func (oh *orderHandler) CreateOrder(c *gin.Context) {
 	}
 
 	request := request.OrderRequestToOrderCore(orderRequest)
+
+	request.UserID = userID
 
 	order, errCreate := oh.serviceInterface.CreateOrder(request)
 	if errCreate != nil {
@@ -73,7 +76,18 @@ func (oh *orderHandler) CreateOrder(c *gin.Context) {
 // @Failure 500 {object} responses.TErrorResponse
 // @Router /orders [get]
 func (oh *orderHandler) GetAllOrders(c *gin.Context) {
-	orders, errGetAll := oh.serviceInterface.GetAllOrders()
+
+	userID, role, errExtract := middlewares.VerifyToken(c)
+	if errExtract != nil {
+		c.JSON(http.StatusUnauthorized, responses.ErrorResponse(errExtract.Error()))
+		return
+	}
+	if role != constant.USER {
+		c.JSON(http.StatusUnauthorized, responses.ErrorResponse("not authorized to access this resource"))
+		return
+	}
+
+	orders, errGetAll := oh.serviceInterface.GetAllOrders(userID)
 	if errGetAll != nil {
 		c.JSON(http.StatusInternalServerError, responses.ErrorResponse(errGetAll.Error()))
 		return
@@ -101,11 +115,26 @@ func (oh *orderHandler) GetAllOrders(c *gin.Context) {
 func (oh *orderHandler) GetOrderByID(c *gin.Context) {
 	orderID := c.Param("order_id")
 
+	userID, role, errExtract := middlewares.VerifyToken(c)
+	if errExtract != nil {
+		c.JSON(http.StatusUnauthorized, responses.ErrorResponse(errExtract.Error()))
+		return
+	}
+	if role != constant.USER {
+		c.JSON(http.StatusUnauthorized, responses.ErrorResponse("not authorized to access this resource"))
+		return
+	}
+	
 	order, errGet := oh.serviceInterface.GetOrderByID(orderID)
 	if errGet != nil {
 		c.JSON(http.StatusInternalServerError, responses.ErrorResponse(errGet.Error()))
 		return
 	}
+
+	if userID != order.UserID {
+        c.JSON(http.StatusUnauthorized, responses.ErrorResponse("not authorized to access this resource"))
+        return
+    }
 
 	response := response.OrderCoreToOrderResponse(order)
 
@@ -125,6 +154,30 @@ func (oh *orderHandler) GetOrderByID(c *gin.Context) {
 // @Failure 500 {object} responses.TErrorResponse
 // @Router /orders/{order_id} [put]
 func (oh *orderHandler) UpdateOrderByID(c *gin.Context) {
+	orderID := c.Param("order_id")
+
+	userID, role, errExtract := middlewares.VerifyToken(c)
+	if errExtract != nil {
+		c.JSON(http.StatusUnauthorized, responses.ErrorResponse(errExtract.Error()))
+		return
+	}
+	if role != constant.USER {
+		c.JSON(http.StatusUnauthorized, responses.ErrorResponse("not authorized to access this resource"))
+		return
+	}
+
+	order, errGet := oh.serviceInterface.GetOrderByID(orderID)
+    if errGet != nil {
+        c.JSON(http.StatusInternalServerError, responses.ErrorResponse(errGet.Error()))
+        return
+    }
+
+	if userID != order.UserID {
+        c.JSON(http.StatusUnauthorized, responses.ErrorResponse("not authorized to access this resource"))
+        return
+    }
+
+
 	orderRequest := request.UpdateOrderRequest{}
 
 	errBind := c.ShouldBind(&orderRequest)
@@ -135,7 +188,6 @@ func (oh *orderHandler) UpdateOrderByID(c *gin.Context) {
 
 	request := request.UpdateOrderRequestToOrderCore(orderRequest)
 
-	orderID := c.Param("order_id")
 	order, errUpdate := oh.serviceInterface.UpdateOrderByID(orderID, request)
 	if errUpdate != nil {
 		c.JSON(http.StatusBadRequest, responses.ErrorResponse(errUpdate.Error()))
@@ -158,93 +210,29 @@ func (oh *orderHandler) UpdateOrderByID(c *gin.Context) {
 // @Router /orders/{order_id} [delete]
 func (oh *orderHandler) DeleteOrderByID(c *gin.Context) {
 	orderID := c.Param("order_id")
+
+	userID, role, errExtract := middlewares.VerifyToken(c)
+	if errExtract != nil {
+		c.JSON(http.StatusUnauthorized, responses.ErrorResponse(errExtract.Error()))
+		return
+	}
+	if role != constant.USER {
+		c.JSON(http.StatusUnauthorized, responses.ErrorResponse("not authorized to access this resource"))
+		return
+	}
+
+	order, errGet := oh.serviceInterface.GetOrderByID(orderID)
+    if errGet != nil {
+        c.JSON(http.StatusInternalServerError, responses.ErrorResponse(errGet.Error()))
+        return
+    }
+
+	if userID != order.UserID {
+		c.JSON(http.StatusUnauthorized, responses.ErrorResponse("not authorized to access this resource"))
+		return
+	}
+
 	errDelete := oh.serviceInterface.DeleteOrderByID(orderID)
-	if errDelete != nil {
-		c.JSON(http.StatusInternalServerError, responses.ErrorResponse(errDelete.Error()))
-		return
-	}
-	c.JSON(http.StatusOK, responses.SuccessResponse("data deleted successfully", nil))
-}
-
-func (ih *orderHandler) CreateItem(c *gin.Context) {
-	itemRequest := request.ItemRequest{}
-
-	errBind := c.ShouldBind(&itemRequest)
-	if errBind != nil {
-		c.JSON(http.StatusBadRequest, responses.ErrorResponse(errBind.Error()))
-		return
-	}
-
-	request := request.ItemRequestToItemCore(itemRequest)
-
-	item, errCreate := ih.serviceInterface.CreateItem(request)
-	if errCreate != nil {
-		c.JSON(http.StatusBadRequest, responses.ErrorResponse(errCreate.Error()))
-		return
-	}
-
-	response := response.ItemCoreToItemResponse(item)
-
-	c.JSON(http.StatusCreated, responses.SuccessResponse("data created successfully", response))
-}
-
-func (ih *orderHandler) GetAllItems(c *gin.Context) {
-	items, errGetAll := ih.serviceInterface.GetAllItems()
-	if errGetAll != nil {
-		c.JSON(http.StatusInternalServerError, responses.ErrorResponse(errGetAll.Error()))
-		return
-	}
-
-	if len(items) == 0 {
-		c.JSON(http.StatusOK, responses.SuccessResponse("data is empty", nil))
-		return
-	}
-
-	response := response.ListItemCoreToItemResponse(items)
-
-	c.JSON(http.StatusOK, responses.SuccessResponse("data retrieved successfully", response))
-}
-
-func (ih *orderHandler) GetItemByID(c *gin.Context) {
-	itemID := c.Param("item_id")
-
-	item, errGet := ih.serviceInterface.GetItemByID(itemID)
-	if errGet != nil {
-		c.JSON(http.StatusInternalServerError, responses.ErrorResponse(errGet.Error()))
-		return
-	}
-
-	response := response.ItemCoreToItemResponse(item)
-
-	c.JSON(http.StatusOK, responses.SuccessResponse("data retrieved successfully", response))
-}
-
-func (ih *orderHandler) UpdateItemByID(c *gin.Context) {
-	itemRequest := request.ItemRequest{}
-
-	errBind := c.ShouldBind(&itemRequest)
-	if errBind != nil {
-		c.JSON(http.StatusBadRequest, responses.ErrorResponse(errBind.Error()))
-		return
-	}
-
-	request := request.ItemRequestToItemCore(itemRequest)
-
-	itemID := c.Param("item_id")
-	item, errUpdate := ih.serviceInterface.UpdateItemByID(itemID, request)
-	if errUpdate != nil {
-		c.JSON(http.StatusBadRequest, responses.ErrorResponse(errUpdate.Error()))
-		return
-	}
-
-	response := response.ItemCoreToItemResponse(item)
-
-	c.JSON(http.StatusOK, responses.SuccessResponse("data updated successfully", response))
-}
-
-func (ih *orderHandler) DeleteItemByID(c *gin.Context) {
-	itemID := c.Param("item_id")
-	errDelete := ih.serviceInterface.DeleteItemByID(itemID)
 	if errDelete != nil {
 		c.JSON(http.StatusInternalServerError, responses.ErrorResponse(errDelete.Error()))
 		return

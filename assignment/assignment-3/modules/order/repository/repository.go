@@ -30,10 +30,10 @@ func (or *orderRepository) CreateOrder(orderCore entity.Order) (entity.Order, er
 	return orderResponse, nil
 }
 
-func (or *orderRepository) GetAllOrders() ([]entity.Order, error) {
+func (or *orderRepository) GetAllOrders(userID string) ([]entity.Order, error) {
 	orderModel := []model.Order{}
 
-	tx := or.db.Model(&model.Order{}).Preload("Items").Find(&orderModel)
+	tx := or.db.Model(&model.Order{}).Where("user_id = ?", userID).Preload("Items").Find(&orderModel)
 	if tx.Error != nil {
 		return nil, tx.Error
 	}

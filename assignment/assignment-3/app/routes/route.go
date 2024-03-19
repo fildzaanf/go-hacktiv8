@@ -8,6 +8,6 @@ import (
 func SetupRoutes(r *gin.Engine, db *gorm.DB) {
 	route := r.Group("")
 	OrderRoutes(route, db)
-	ItemRoutes(route, db)
+	UserRoutes(route, db)	
 }
 

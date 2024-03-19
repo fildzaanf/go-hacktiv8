@@ -68,19 +68,20 @@ func (ur *userRepository) GetUserByID(id string) (entity.User, error) {
 	return response, nil
 }
 
-func (ur *userRepository) UpdateUserByID(id string, userCore entity.User) error {
+func (ur *userRepository) UpdateUserByID(id string, userCore entity.User) (entity.User, error) {
 	request := entity.UserCoreToUserModel(userCore)
 
 	tx := ur.db.Where("id = ?", id).Updates(&request)
 	if tx.Error != nil {
-		return tx.Error
+		return entity.User{}, tx.Error
 	}
 
 	if tx.RowsAffected == 0 {
-		return errors.New("id not found")
+		return entity.User{}, errors.New("id not found")
 	}
 
-	return nil
+	response := entity.UserModelToUserCore(request)
+	return response, nil
 }
 
 func (ur *userRepository) GetUserByEmail(email string) (entity.User, error) {

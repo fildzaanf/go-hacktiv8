@@ -96,27 +96,27 @@ func (us *userService) GetUserByID(userID string) (entity.User, error) {
 	return userData, nil
 }
 
-func (us *userService) UpdateUserByID(userID string, userCore entity.User) error {
+func (us *userService) UpdateUserByID(userID string, userCore entity.User) (entity.User, error) {
 	if userID == "" {
-		return errors.New("invalid id")
+		return entity.User{}, errors.New("invalid id")
 	}
 
 	_, errGetID := us.userRepository.GetUserByID(userID)
 	if errGetID != nil {
-		return errGetID
+		return entity.User{}, errGetID
 	}
 
 	errEmailValid := validator.IsEmailValid(userCore.Email)
 	if errEmailValid != nil {
-		return errEmailValid
+		return  entity.User{}, errEmailValid
 	}
 
-	errUpdate := us.userRepository.UpdateUserByID(userID, userCore)
+	userData, errUpdate := us.userRepository.UpdateUserByID(userID, userCore)
 	if errUpdate != nil {
-		return errUpdate
+		return  entity.User{}, errUpdate
 	}
 
-	return nil
+	return userData, nil
 }
 
 func (us *userService) DeleteUserByID(userID string) error {
