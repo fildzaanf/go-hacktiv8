@@ -5,7 +5,7 @@ import (
 	"assignment-2/app/databases/postgresql"
 	"assignment-2/app/routes"
 
-	// _ "assignment-2/docs"
+	"assignment-2/docs"
 	"assignment-2/middlewares"
 	"log"
 
@@ -14,7 +14,7 @@ import (
 	"github.com/sirupsen/logrus"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
-	"github.com/swaggo/swag/example/basic/docs"
+	
 )
 
 // @title Orders API
