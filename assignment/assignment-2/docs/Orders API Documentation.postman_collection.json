@@ -1,0 +1,236 @@
+{
+	"info": {
+		"_postman_id": "cb37c5dc-9921-424b-9754-19d43389bc66",
+		"name": "Orders API Documentation",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "32514382"
+	},
+	"item": [
+		{
+			"name": "Order",
+			"item": [
+				{
+					"name": "Create Order",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"customer_name\": \"Anna\",\r\n    \"ordered_at\": \"2024-03-14T10:00:00Z\",\r\n    \"items\": [\r\n        {\r\n            \"item_code\": \"ABC123\",\r\n            \"description\": \"Product A\",\r\n            \"quantity\": 2\r\n        },\r\n        {\r\n            \"item_code\": \"XYZ456\",\r\n            \"description\": \"Product B\",\r\n            \"quantity\": 1\r\n        }\r\n    ]\r\n}\r\n\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:8000/orders"
+					},
+					"response": [
+						{
+							"name": "201",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"customer_name\": \"Anna\",\r\n    \"ordered_at\": \"2024-03-14T10:00:00Z\",\r\n    \"items\": [\r\n        {\r\n            \"item_code\": \"ABC123\",\r\n            \"description\": \"Product A\",\r\n            \"quantity\": 2\r\n        },\r\n        {\r\n            \"item_code\": \"XYZ456\",\r\n            \"description\": \"Product B\",\r\n            \"quantity\": 1\r\n        }\r\n    ]\r\n}\r\n\r\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": "http://localhost:8000/orders"
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Date",
+									"value": "Tue, 19 Mar 2024 03:49:08 GMT"
+								},
+								{
+									"key": "Content-Length",
+									"value": "400"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"meta\": {\n        \"success\": true,\n        \"message\": \"data created successfully\"\n    },\n    \"results\": {\n        \"id\": \"fd80c326-3baa-4d74-80d8-4dc429fec78c\",\n        \"customer_name\": \"Anna\",\n        \"ordered_at\": \"2024-03-14T10:00:00Z\",\n        \"items\": [\n            {\n                \"id\": \"8c9a7c72-69fa-44b9-be2a-3b058c1a8f67\",\n                \"item_code\": \"ABC123\",\n                \"description\": \"Product A\",\n                \"quantity\": 2\n            },\n            {\n                \"id\": \"1d7ed342-f3f7-4aa1-a463-288b7ef14acb\",\n                \"item_code\": \"XYZ456\",\n                \"description\": \"Product B\",\n                \"quantity\": 1\n            }\n        ]\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "Get All Orders",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "http://localhost:8000/orders"
+					},
+					"response": [
+						{
+							"name": "200",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": "http://localhost:8000/orders"
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Date",
+									"value": "Tue, 19 Mar 2024 03:52:04 GMT"
+								},
+								{
+									"key": "Transfer-Encoding",
+									"value": "chunked"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"meta\": {\n        \"success\": true,\n        \"message\": \"data retrieved successfully\"\n    },\n    \"results\": [\n        {\n            \"id\": \"f6bbc370-835a-4de7-a6ac-07cb70ed1c9e\",\n            \"customer_name\": \"Annafz\",\n            \"ordered_at\": \"2024-07-14T10:00:00Z\",\n            \"items\": [\n                {\n                    \"id\": \"e47cfafc-1351-4554-aa7a-0eb897944e91\",\n                    \"item_code\": \"ABC123\",\n                    \"description\": \"Product Z\",\n                    \"quantity\": 2\n                },\n                {\n                    \"id\": \"f688b0a0-8153-4de3-a40e-34a4044be164\",\n                    \"item_code\": \"XYZ456\",\n                    \"description\": \"Product Y\",\n                    \"quantity\": 1\n                },\n                {\n                    \"id\": \"6c046b56-b5e4-4b10-bbbd-6e3af793ecd9\",\n                    \"item_code\": \"ABC123$\",\n                    \"description\": \"Product X\",\n                    \"quantity\": 2\n                },\n                {\n                    \"id\": \"8c4bcb01-280f-4944-9e87-212aaadd3614\",\n                    \"item_code\": \"XYZ456\",\n                    \"description\": \"Product B\",\n                    \"quantity\": 1\n                },\n                {\n                    \"id\": \"3bd35f59-3b3e-438c-bfa6-24aef3d0ea2e\",\n                    \"item_code\": \"ABC123$\",\n                    \"description\": \"Product A\",\n                    \"quantity\": 2\n                },\n                {\n                    \"id\": \"76890a3b-d211-4b6d-838d-493697368cc4\",\n                    \"item_code\": \"XYZ456\",\n                    \"description\": \"Product B\",\n                    \"quantity\": 1\n                },\n                {\n                    \"id\": \"6879dc7e-14b1-423b-b716-e696026d12dd\",\n                    \"item_code\": \"ABC123$\",\n                    \"description\": \"Product A\",\n                    \"quantity\": 2\n                },\n                {\n                    \"id\": \"c0eca6ad-8e29-4e12-86eb-92d4607aac41\",\n                    \"item_code\": \"XYZ456\",\n                    \"description\": \"Product CC\",\n                    \"quantity\": 1\n                },\n                {\n                    \"id\": \"b6a2210d-5539-45b6-bbbc-a826dd199470\",\n                    \"item_code\": \"ABC123\",\n                    \"description\": \"Product Z\",\n                    \"quantity\": 2\n                },\n                {\n                    \"id\": \"eb5c1fce-31ea-4e32-a304-8fee858a99b9\",\n                    \"item_code\": \"XYZ456\",\n                    \"description\": \"Product CC\",\n                    \"quantity\": 1\n                },\n                {\n                    \"id\": \"a86492cb-2f75-4c9c-ad29-ff89d30c8fbd\",\n                    \"item_code\": \"ABC123\",\n                    \"description\": \"Product Z\",\n                    \"quantity\": 2\n                },\n                {\n                    \"id\": \"ebe23d28-274c-49d1-8d6e-fff8fba9d3c2\",\n                    \"item_code\": \"XYZ456\",\n                    \"description\": \"Product Y\",\n                    \"quantity\": 1\n                }\n            ]\n        },\n        {\n            \"id\": \"fd80c326-3baa-4d74-80d8-4dc429fec78c\",\n            \"customer_name\": \"Anna\",\n            \"ordered_at\": \"2024-03-14T10:00:00Z\",\n            \"items\": [\n                {\n                    \"id\": \"8c9a7c72-69fa-44b9-be2a-3b058c1a8f67\",\n                    \"item_code\": \"ABC123\",\n                    \"description\": \"Product A\",\n                    \"quantity\": 2\n                },\n                {\n                    \"id\": \"1d7ed342-f3f7-4aa1-a463-288b7ef14acb\",\n                    \"item_code\": \"XYZ456\",\n                    \"description\": \"Product B\",\n                    \"quantity\": 1\n                }\n            ]\n        },\n        {\n            \"id\": \"76a35c36-feac-4f9a-a857-3588dfdce045\",\n            \"customer_name\": \"Anna\",\n            \"ordered_at\": \"2024-03-14T10:00:00Z\",\n            \"items\": [\n                {\n                    \"id\": \"f37311ec-c431-46ce-b374-d87a8b469c8b\",\n                    \"item_code\": \"ABC123\",\n                    \"description\": \"Product A\",\n                    \"quantity\": 2\n                },\n                {\n                    \"id\": \"f38df63e-5aa0-4b1f-aca3-0e3308065357\",\n                    \"item_code\": \"XYZ456\",\n                    \"description\": \"Product B\",\n                    \"quantity\": 1\n                }\n            ]\n        }\n    ]\n}"
+						}
+					]
+				},
+				{
+					"name": "Get Order By ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "http://localhost:8000/orders/f6bbc370-835a-4de7-a6ac-07cb70ed1c9e"
+					},
+					"response": [
+						{
+							"name": "200",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": "http://localhost:8000/orders/f6bbc370-835a-4de7-a6ac-07cb70ed1c9e"
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Date",
+									"value": "Tue, 19 Mar 2024 03:53:01 GMT"
+								},
+								{
+									"key": "Content-Length",
+									"value": "1469"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"meta\": {\n        \"success\": true,\n        \"message\": \"data retrieved successfully\"\n    },\n    \"results\": {\n        \"id\": \"f6bbc370-835a-4de7-a6ac-07cb70ed1c9e\",\n        \"customer_name\": \"Annafz\",\n        \"ordered_at\": \"2024-07-14T10:00:00Z\",\n        \"items\": [\n            {\n                \"id\": \"e47cfafc-1351-4554-aa7a-0eb897944e91\",\n                \"item_code\": \"ABC123\",\n                \"description\": \"Product Z\",\n                \"quantity\": 2\n            },\n            {\n                \"id\": \"f688b0a0-8153-4de3-a40e-34a4044be164\",\n                \"item_code\": \"XYZ456\",\n                \"description\": \"Product Y\",\n                \"quantity\": 1\n            },\n            {\n                \"id\": \"6c046b56-b5e4-4b10-bbbd-6e3af793ecd9\",\n                \"item_code\": \"ABC123$\",\n                \"description\": \"Product X\",\n                \"quantity\": 2\n            },\n            {\n                \"id\": \"8c4bcb01-280f-4944-9e87-212aaadd3614\",\n                \"item_code\": \"XYZ456\",\n                \"description\": \"Product B\",\n                \"quantity\": 1\n            },\n            {\n                \"id\": \"3bd35f59-3b3e-438c-bfa6-24aef3d0ea2e\",\n                \"item_code\": \"ABC123$\",\n                \"description\": \"Product A\",\n                \"quantity\": 2\n            },\n            {\n                \"id\": \"76890a3b-d211-4b6d-838d-493697368cc4\",\n                \"item_code\": \"XYZ456\",\n                \"description\": \"Product B\",\n                \"quantity\": 1\n            },\n            {\n                \"id\": \"6879dc7e-14b1-423b-b716-e696026d12dd\",\n                \"item_code\": \"ABC123$\",\n                \"description\": \"Product A\",\n                \"quantity\": 2\n            },\n            {\n                \"id\": \"c0eca6ad-8e29-4e12-86eb-92d4607aac41\",\n                \"item_code\": \"XYZ456\",\n                \"description\": \"Product CC\",\n                \"quantity\": 1\n            },\n            {\n                \"id\": \"b6a2210d-5539-45b6-bbbc-a826dd199470\",\n                \"item_code\": \"ABC123\",\n                \"description\": \"Product Z\",\n                \"quantity\": 2\n            },\n            {\n                \"id\": \"eb5c1fce-31ea-4e32-a304-8fee858a99b9\",\n                \"item_code\": \"XYZ456\",\n                \"description\": \"Product CC\",\n                \"quantity\": 1\n            },\n            {\n                \"id\": \"a86492cb-2f75-4c9c-ad29-ff89d30c8fbd\",\n                \"item_code\": \"ABC123\",\n                \"description\": \"Product Z\",\n                \"quantity\": 2\n            },\n            {\n                \"id\": \"ebe23d28-274c-49d1-8d6e-fff8fba9d3c2\",\n                \"item_code\": \"XYZ456\",\n                \"description\": \"Product Y\",\n                \"quantity\": 1\n            }\n        ]\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "Update Order By ID",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": " {\r\n        \"customer_name\": \"Annafz\",\r\n        \"ordered_at\": \"2024-07-14T10:00:00Z\",\r\n        \"items\": [\r\n            {\r\n                \"id\": \"e47cfafc-1351-4554-aa7a-0eb897944e91\",\r\n                \"item_code\": \"ABC123\",\r\n                \"description\": \"Product Z\",\r\n                \"quantity\": 2\r\n            },\r\n            {\r\n                \"id\": \"f688b0a0-8153-4de3-a40e-34a4044be164\",\r\n                \"item_code\": \"XYZ456\",\r\n                \"description\": \"Product Y\",\r\n                \"quantity\": 1\r\n            }\r\n        ]\r\n    }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "http://localhost:8000/orders/f6bbc370-835a-4de7-a6ac-07cb70ed1c9e"
+					},
+					"response": [
+						{
+							"name": "200",
+							"originalRequest": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": " {\r\n        \"customer_name\": \"Annafz\",\r\n        \"ordered_at\": \"2024-07-14T10:00:00Z\",\r\n        \"items\": [\r\n            {\r\n                \"id\": \"e47cfafc-1351-4554-aa7a-0eb897944e91\",\r\n                \"item_code\": \"ABC123\",\r\n                \"description\": \"Product Z\",\r\n                \"quantity\": 2\r\n            },\r\n            {\r\n                \"id\": \"f688b0a0-8153-4de3-a40e-34a4044be164\",\r\n                \"item_code\": \"XYZ456\",\r\n                \"description\": \"Product Y\",\r\n                \"quantity\": 1\r\n            }\r\n        ]\r\n    }",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": "http://localhost:8000/orders/f6bbc370-835a-4de7-a6ac-07cb70ed1c9e"
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Date",
+									"value": "Tue, 19 Mar 2024 03:51:36 GMT"
+								},
+								{
+									"key": "Content-Length",
+									"value": "402"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"meta\": {\n        \"success\": true,\n        \"message\": \"data updated successfully\"\n    },\n    \"results\": {\n        \"id\": \"f6bbc370-835a-4de7-a6ac-07cb70ed1c9e\",\n        \"customer_name\": \"Annafz\",\n        \"ordered_at\": \"2024-07-14T10:00:00Z\",\n        \"items\": [\n            {\n                \"id\": \"a86492cb-2f75-4c9c-ad29-ff89d30c8fbd\",\n                \"item_code\": \"ABC123\",\n                \"description\": \"Product Z\",\n                \"quantity\": 2\n            },\n            {\n                \"id\": \"ebe23d28-274c-49d1-8d6e-fff8fba9d3c2\",\n                \"item_code\": \"XYZ456\",\n                \"description\": \"Product Y\",\n                \"quantity\": 1\n            }\n        ]\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "Delete Order By ID",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": "http://localhost:8000/orders/f6bbc370-835a-4de7-a6ac-07cb70ed1c9e"
+					},
+					"response": [
+						{
+							"name": "200",
+							"originalRequest": {
+								"method": "DELETE",
+								"header": [],
+								"url": "http://localhost:8000/orders/f6bbc370-835a-4de7-a6ac-07cb70ed1c9e"
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Date",
+									"value": "Tue, 19 Mar 2024 03:53:29 GMT"
+								},
+								{
+									"key": "Content-Length",
+									"value": "63"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"meta\": {\n        \"success\": true,\n        \"message\": \"data deleted successfully\"\n    }\n}"
+						}
+					]
+				}
+			]
+		}
+	]
+}
