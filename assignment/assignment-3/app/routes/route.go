@@ -7,7 +7,7 @@ import (
 
 func SetupRoutes(r *gin.Engine, db *gorm.DB) {
 	route := r.Group("")
-	OrderRoutes(route, db)
-	UserRoutes(route, db)	
+	UserRoutes(route, db)
+	OrderRoutes(route, db)	
 }
 

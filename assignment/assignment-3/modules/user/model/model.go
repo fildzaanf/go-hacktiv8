@@ -12,7 +12,7 @@ type User struct {
 	Fullname  string
 	Email     string `gorm:"not null"`
 	Password  string `gorm:"not null"`
-	Role      string `gorm:"type:enum('user');default:'user'"`
+	Role      string `gorm:"not null"`
 	CreatedAt time.Time
 	UpdatedAt time.Time
 	DeletedAt gorm.DeletedAt `gorm:"index"`

@@ -6,6 +6,7 @@ type OrderResponse struct {
 	ID           string         `json:"id"`
 	CustomerName string         `json:"customer_name"`
 	OrderedAt    time.Time      `json:"ordered_at"`
+	UserID       string         `json:"user_id"`
 	Items        []ItemResponse `json:"items"`
 }
 

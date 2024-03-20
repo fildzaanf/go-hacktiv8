@@ -12,6 +12,7 @@ type User struct {
 	Fullname  string
 	Email     string
 	Password  string
+	Role      string 
 	Orders    []entity.Order
 	CreatedAt time.Time
 	UpdatedAt time.Time

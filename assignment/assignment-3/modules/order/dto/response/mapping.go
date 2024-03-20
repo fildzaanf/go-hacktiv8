@@ -7,6 +7,7 @@ func OrderCoreToOrderResponse(orderCore entity.Order) OrderResponse {
 		ID:           orderCore.ID,
 		CustomerName: orderCore.CustomerName,
 		OrderedAt:    orderCore.OrderedAt,
+		UserID:       orderCore.UserID,
 		Items:        ListItemCoreToItemResponse(orderCore.Items),
 	}
 }

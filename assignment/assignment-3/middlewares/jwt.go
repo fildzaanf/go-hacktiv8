@@ -1,9 +1,9 @@
 package middlewares
 
 import (
-	"assignment-2/app/configs"
 	"errors"
 	"net/http"
+	"os"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -11,8 +11,6 @@ import (
 	"github.com/joho/godotenv"
 	"github.com/sirupsen/logrus"
 )
-
-var config *configs.Configuration
 
 func init() {
 	err := godotenv.Load()
@@ -34,6 +32,8 @@ func JWTMiddleware() gin.HandlerFunc {
 }
 
 func GenerateToken(id string, role string) (string, error) {
+	logrus.Infof("generating token for user with ID: %s, Role: %s", id, role)
+
 	tokenClaims := jwt.MapClaims{}
 	tokenClaims["authorized"] = true
 	tokenClaims["id"] = id
@@ -41,10 +41,13 @@ func GenerateToken(id string, role string) (string, error) {
 	tokenClaims["exp"] = time.Now().Add(time.Hour * 24).Unix()
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, tokenClaims)
-	tokenString, err := token.SignedString([]byte(config.JWT.JWT_SECRET))
+	tokenString, err := token.SignedString([]byte(os.Getenv("JWT_SECRET")))
 	if err != nil {
+		logrus.Errorf("error generating token: %v", err)
 		return "", err
 	}
+	logrus.Infof("token generated successfully: %s", tokenString)
+
 	return tokenString, nil
 }
 
@@ -56,7 +59,7 @@ func VerifyToken(c *gin.Context) (string, string, error) {
 
 	tokenString = tokenString[len("bearer "):]
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
-		jwtSecret := []byte(config.JWT.JWT_SECRET)
+		jwtSecret := []byte(os.Getenv("JWT_SECRET"))
 		return jwtSecret, nil
 	})
 

@@ -77,7 +77,7 @@ func (us *userService) Login(email, password string) (entity.User, string, error
 		return entity.User{}, "", errors.New("incorrect email or password")
 	}
 
-	token, errCreateToken := middlewares.GenerateToken(userData.ID, "")
+	token, errCreateToken := middlewares.GenerateToken(userData.ID, userData.Role)
 	if errCreateToken != nil {
 		return entity.User{}, "", errors.New("generate token failed")
 	}
@@ -96,6 +96,18 @@ func (us *userService) GetUserByID(userID string) (entity.User, error) {
 	return userData, nil
 }
 
+func (us *userService) GetUserByEmail(email string) (entity.User, error) {
+	if email == "" {
+		return entity.User{}, errors.New("invalid email")
+	}
+
+	userData, errGetEmail := us.userRepository.GetUserByEmail(email)
+	if errGetEmail != nil {
+		return entity.User{}, errors.New("data is empty")
+	}
+	return userData, nil
+}
+
 func (us *userService) UpdateUserByID(userID string, userCore entity.User) (entity.User, error) {
 	if userID == "" {
 		return entity.User{}, errors.New("invalid id")
@@ -103,17 +115,17 @@ func (us *userService) UpdateUserByID(userID string, userCore entity.User) (enti
 
 	_, errGetID := us.userRepository.GetUserByID(userID)
 	if errGetID != nil {
-		return entity.User{}, errGetID
+		return entity.User{}, errors.New("user not found")
 	}
 
 	errEmailValid := validator.IsEmailValid(userCore.Email)
 	if errEmailValid != nil {
-		return  entity.User{}, errEmailValid
+		return entity.User{}, errEmailValid
 	}
 
 	userData, errUpdate := us.userRepository.UpdateUserByID(userID, userCore)
 	if errUpdate != nil {
-		return  entity.User{}, errUpdate
+		return entity.User{}, errUpdate
 	}
 
 	return userData, nil

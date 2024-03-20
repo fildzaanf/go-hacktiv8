@@ -51,27 +51,27 @@ func (ur *userRepository) Login(email, password string) (entity.User, error) {
 	return response, nil
 }
 
-func (ur *userRepository) GetUserByID(id string) (entity.User, error) {
+func (ur *userRepository) GetUserByID(userID string) (entity.User, error) {
 
 	userModel := model.User{}
 
-	tx := ur.db.Where("id = ?", id).Preload("Orders").First(&userModel)
+	tx := ur.db.Where("id = ?", userID).Preload("Orders").Preload("Orders.Items").First(&userModel)
 	if tx.Error != nil {
 		return entity.User{}, tx.Error
 	}
 
 	if tx.RowsAffected == 0 {
-		return entity.User{}, errors.New("id not found")
+		return entity.User{}, errors.New("data not found")
 	}
 
 	response := entity.UserModelToUserCore(userModel)
 	return response, nil
 }
 
-func (ur *userRepository) UpdateUserByID(id string, userCore entity.User) (entity.User, error) {
-	request := entity.UserCoreToUserModel(userCore)
+func (ur *userRepository) UpdateUserByID(userID string, userCore entity.User) (entity.User, error) {
+	userModel := model.User{}
 
-	tx := ur.db.Where("id = ?", id).Updates(&request)
+	tx := ur.db.Where("id = ?", userID).Preload("Orders").Preload("Orders.Items").First(&userModel)
 	if tx.Error != nil {
 		return entity.User{}, tx.Error
 	}
@@ -80,14 +80,21 @@ func (ur *userRepository) UpdateUserByID(id string, userCore entity.User) (entit
 		return entity.User{}, errors.New("id not found")
 	}
 
-	response := entity.UserModelToUserCore(request)
+	updatedUserModel := entity.UserCoreToUserModel(userCore)
+
+	tx = ur.db.Model(&userModel).Updates(updatedUserModel)
+	if tx.Error != nil {
+		return entity.User{}, tx.Error
+	}
+
+	response := entity.UserModelToUserCore(userModel)
 	return response, nil
 }
 
 func (ur *userRepository) GetUserByEmail(email string) (entity.User, error) {
 	userModel := model.User{}
 
-	tx := ur.db.Where("email = ?", email).First(&userModel)
+	tx := ur.db.Where("email = ?", email).Preload("Orders").First(&userModel) 
 
 	if tx.RowsAffected == 0 {
 		return entity.User{}, errors.New("email not found")

@@ -1,12 +1,18 @@
 package entity
 
-import "assignment-2/modules/user/model"
+import (
+	"assignment-2/modules/order/entity"
+	"assignment-2/modules/user/model"
+)
 
 func UserCoreToUserModel(userCore User) model.User {
 	userModel := model.User{
-		Fullname: userCore.Fullname,
-		Email:    userCore.Email,
-		Password: userCore.Password,
+		ID:        userCore.ID,
+		Fullname:  userCore.Fullname,
+		Email:     userCore.Email,
+		Password:  userCore.Password,
+		Role:      userCore.Role,
+		Orders:    entity.ListOrderCoreToOrderModel(userCore.Orders),
 		CreatedAt: userCore.CreatedAt,
 		UpdatedAt: userCore.UpdatedAt,
 		DeletedAt: userCore.DeletedAt,
@@ -29,6 +35,8 @@ func UserModelToUserCore(userModel model.User) User {
 		Fullname:  userModel.Fullname,
 		Email:     userModel.Email,
 		Password:  userModel.Password,
+		Role:      userModel.Role,
+		Orders:    entity.ListOrderModelToOrderCore(userModel.Orders),
 		CreatedAt: userModel.CreatedAt,
 		UpdatedAt: userModel.UpdatedAt,
 		DeletedAt: userModel.DeletedAt,

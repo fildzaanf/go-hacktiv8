@@ -106,7 +106,7 @@ func (uh *userHandler) GetUserByID(c *gin.Context) {
 	}
 
 	if tokenUserID != pathUserID {
-		c.JSON(http.StatusUnauthorized, responses.ErrorResponse("not authorized to access this resource"))
+		c.JSON(http.StatusUnauthorized, responses.ErrorResponse("not authorizeds to access this resource"))
 		return
 	}
 

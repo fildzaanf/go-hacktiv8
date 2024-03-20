@@ -10,6 +10,7 @@ func UserCoreToUserRegisterResponse(response entity.User) UserRegisterResponse {
 		ID:       response.ID,
 		Fullname: response.Fullname,
 		Email:    response.Email,
+		Role:     response.Role,
 	}
 }
 
@@ -18,6 +19,7 @@ func UserCoreToUserLoginResponse(response entity.User, token string) UserLoginRe
 		ID:       response.ID,
 		Fullname: response.Fullname,
 		Email:    response.Email,
+		Role:     response.Role,
 		Token:    token,
 	}
 }
@@ -27,6 +29,7 @@ func UserCoreToUserResponse(response entity.User) UserResponse {
 		ID:       response.ID,
 		Fullname: response.Fullname,
 		Email:    response.Email,
+		Role:     response.Role,
 		Orders:   or.ListOrdeCoreToOrderResponse(response.Orders),
 	}
 }
