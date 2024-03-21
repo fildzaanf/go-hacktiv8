@@ -1,10 +1,10 @@
 package migration
 
 import (
-	um "final-project/modules/user/model"
-	pm "final-project/modules/photo/model"
 	cm "final-project/modules/comment/model"
 	msm "final-project/modules/media-social/model"
+	pm "final-project/modules/photo/model"
+	um "final-project/modules/user/model"
 	"log"
 
 	"gorm.io/gorm"
@@ -18,9 +18,8 @@ func Migrate(db *gorm.DB) {
 		&msm.MediaSocial{},
 	)
 
-
 	migrator := db.Migrator()
-	tables := []string{"users","photos", "comments", "media_socials"}
+	tables := []string{"users", "photos", "comments", "media_socials"}
 	for _, table := range tables {
 		if !migrator.HasTable(table) {
 			log.Fatalf("table %s was not successfully created", table)

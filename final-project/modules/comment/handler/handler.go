@@ -5,8 +5,8 @@ import (
 	"final-project/modules/comment/dto/request"
 	"final-project/modules/comment/dto/response"
 	"final-project/modules/comment/entity"
-	"final-project/utils/responses"
 	"final-project/utils/constant"
+	"final-project/utils/responses"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -59,7 +59,7 @@ func (ch *commentHandler) CreateComment(c *gin.Context) {
 	commentCore := request.CommentRequestToCommentCore(CommentRequest)
 
 	commentCore.UserID = userID
-	
+
 	commentData, errCreate := ch.commentService.CreateComment(commentCore)
 	if errCreate != nil {
 		c.JSON(http.StatusBadRequest, responses.ErrorResponse(errCreate.Error()))
@@ -70,7 +70,6 @@ func (ch *commentHandler) CreateComment(c *gin.Context) {
 
 	c.JSON(http.StatusCreated, responses.SuccessResponse("comment data created successfully", commentResponse))
 }
-
 
 // GetAllComments godoc
 // @Summary Get all comments

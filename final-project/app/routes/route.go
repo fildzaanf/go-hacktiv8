@@ -6,8 +6,10 @@ import (
 )
 
 func SetupRoutes(r *gin.Engine, db *gorm.DB) {
-	route := r.Group("")
-	
-	UserRoutes(route, db)	
+	base := r.Group("")
+	UserRoutes(base, db)
+	PhotoRoutes(base, db)	
+	CommentRoutes(base, db)
+	MediaSocialRoutes(base, db)
 }
 

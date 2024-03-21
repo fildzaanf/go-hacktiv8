@@ -16,33 +16,9 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/orders": {
-            "get": {
-                "description": "Retrieve all orders",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "orders"
-                ],
-                "summary": "Get all orders",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/responses.TSuccessResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/responses.TErrorResponse"
-                        }
-                    }
-                }
-            },
+        "/accounts/login": {
             "post": {
-                "description": "Create a new order with the provided order data",
+                "description": "Login user with provided email and password",
                 "consumes": [
                     "application/json"
                 ],
@@ -50,172 +26,13 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "orders"
+                    "accounts"
                 ],
-                "summary": "Create a new order",
+                "summary": "Login user",
                 "parameters": [
                     {
-                        "description": "Order data",
-                        "name": "orderRequest",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/request.OrderRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "201": {
-                        "description": "Created",
-                        "schema": {
-                            "$ref": "#/definitions/response.OrderResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/responses.TErrorResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/orders/{order_id}": {
-            "get": {
-                "description": "Retrieve order details by order ID",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "orders"
-                ],
-                "summary": "Get order by ID",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Order ID",
-                        "name": "order_id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/response.OrderResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/responses.TErrorResponse"
-                        }
-                    }
-                }
-            },
-            "put": {
-                "description": "Update order details by order ID",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "orders"
-                ],
-                "summary": "Update order by ID",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Order ID",
-                        "name": "order_id",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "description": "Order details",
-                        "name": "updateOrderRequest",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/request.UpdateOrderRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/response.OrderResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/responses.TErrorResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/responses.TErrorResponse"
-                        }
-                    }
-                }
-            },
-            "delete": {
-                "description": "Delete order by order ID",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "orders"
-                ],
-                "summary": "Delete order by ID",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Order ID",
-                        "name": "order_id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/responses.TSuccessResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/responses.TErrorResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/users/login": {
-            "post": {
-                "description": "Log in a user with the provided credentials",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "users"
-                ],
-                "summary": "Log in a user",
-                "parameters": [
-                    {
-                        "description": "Login credentials",
-                        "name": "loginRequest",
+                        "description": "User login credentials",
+                        "name": "userLoginRequest",
                         "in": "body",
                         "required": true,
                         "schema": {
@@ -239,9 +56,9 @@ const docTemplate = `{
                 }
             }
         },
-        "/users/register": {
+        "/accounts/register": {
             "post": {
-                "description": "Register a new user with the provided user data",
+                "description": "Register a new user with the provided data",
                 "consumes": [
                     "application/json"
                 ],
@@ -249,13 +66,13 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "users"
+                    "accounts"
                 ],
                 "summary": "Register a new user",
                 "parameters": [
                     {
-                        "description": "User data",
-                        "name": "registerRequest",
+                        "description": "User data for registration",
+                        "name": "userRegisterRequest",
                         "in": "body",
                         "required": true,
                         "schema": {
@@ -279,6 +96,755 @@ const docTemplate = `{
                 }
             }
         },
+        "/comments": {
+            "get": {
+                "description": "Retrieve all comments",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "comments"
+                ],
+                "summary": "Get all comments",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "JWT access token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/responses.TSuccessResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/responses.TErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/responses.TErrorResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Create a new comment with the provided comment data",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "comments"
+                ],
+                "summary": "Create a new comment",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "JWT access token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "Comment data",
+                        "name": "commentRequest",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request.CommentRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/responses.TSuccessResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/responses.TErrorResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/responses.TErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/comments/{comment_id}": {
+            "get": {
+                "description": "Retrieve comment details by comment ID",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "comments"
+                ],
+                "summary": "Get comment by ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "JWT access token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Comment ID",
+                        "name": "comment_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/responses.TSuccessResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/responses.TErrorResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/responses.TErrorResponse"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "Update comment details by comment ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "comments"
+                ],
+                "summary": "Update comment by ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "JWT access token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Comment ID",
+                        "name": "comment_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Comment details",
+                        "name": "commentRequest",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request.CommentRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/responses.TSuccessResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/responses.TErrorResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/responses.TErrorResponse"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Delete comment by comment ID",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "comments"
+                ],
+                "summary": "Delete comment by ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "JWT access token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Comment ID",
+                        "name": "comment_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/responses.TSuccessResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/responses.TErrorResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/responses.TErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/responses.TErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/media-social": {
+            "get": {
+                "description": "Retrieve all media social entries",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "media-social"
+                ],
+                "summary": "Get all media social entries",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "JWT access token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.MediaSocialResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/responses.TErrorResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Create a new media social entry with the provided data",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "media-social"
+                ],
+                "summary": "Create a new media social entry",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "JWT access token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "Media Social data",
+                        "name": "mediaSocialRequest",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request.MediaSocialRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/response.MediaSocialResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/responses.TErrorResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/responses.TErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/media-social/{medsos_id}": {
+            "get": {
+                "description": "Retrieve media social entry details by media social ID",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "media-social"
+                ],
+                "summary": "Get media social entry by ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "JWT access token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Media Social ID",
+                        "name": "medsos_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.MediaSocialResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/responses.TErrorResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/responses.TErrorResponse"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "Update media social entry details by media social ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "media-social"
+                ],
+                "summary": "Update media social entry by ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "JWT access token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Media Social ID",
+                        "name": "medsos_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Media Social details",
+                        "name": "mediaSocialRequest",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request.MediaSocialRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.MediaSocialResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/responses.TErrorResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/responses.TErrorResponse"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Delete media social entry by media social ID",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "media-social"
+                ],
+                "summary": "Delete media social entry by ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "JWT access token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Media Social ID",
+                        "name": "medsos_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/responses.TSuccessResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/responses.TErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/photos": {
+            "get": {
+                "description": "Retrieve all photos",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "photos"
+                ],
+                "summary": "Get all photos",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "JWT access token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.PhotoResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/responses.TErrorResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Create a new photo with the provided photo data",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "photos"
+                ],
+                "summary": "Create a new photo",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "JWT access token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "Photo data",
+                        "name": "photoRequest",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request.PhotoRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/response.PhotoResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/responses.TErrorResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/responses.TErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/photos/{photo_id}": {
+            "get": {
+                "description": "Retrieve photo details by photo ID",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "photos"
+                ],
+                "summary": "Get photo by ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "JWT access token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Photo ID",
+                        "name": "photo_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.PhotoResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/responses.TErrorResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/responses.TErrorResponse"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "Update photo details by photo ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "photos"
+                ],
+                "summary": "Update photo by ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "JWT access token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Photo ID",
+                        "name": "photo_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Photo details",
+                        "name": "photoRequest",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request.PhotoRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.PhotoResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/responses.TErrorResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/responses.TErrorResponse"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Delete photo by photo ID",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "photos"
+                ],
+                "summary": "Delete photo by ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "JWT access token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Photo ID",
+                        "name": "photo_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/responses.TSuccessResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/responses.TErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/users": {
+            "get": {
+                "description": "Retrieve all users",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "users"
+                ],
+                "summary": "Get all users",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "JWT access token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.UserResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/responses.TErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/users/{user_id}": {
             "get": {
                 "description": "Retrieve user details by user ID",
@@ -290,6 +856,13 @@ const docTemplate = `{
                 ],
                 "summary": "Get user by ID",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "description": "JWT access token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
                     {
                         "type": "string",
                         "description": "User ID",
@@ -311,8 +884,8 @@ const docTemplate = `{
                             "$ref": "#/definitions/responses.TErrorResponse"
                         }
                     },
-                    "500": {
-                        "description": "Internal Server Error",
+                    "401": {
+                        "description": "Unauthorized",
                         "schema": {
                             "$ref": "#/definitions/responses.TErrorResponse"
                         }
@@ -334,6 +907,13 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
+                        "description": "JWT access token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
                         "description": "User ID",
                         "name": "user_id",
                         "in": "path",
@@ -341,7 +921,7 @@ const docTemplate = `{
                     },
                     {
                         "description": "User details",
-                        "name": "updateUserRequest",
+                        "name": "userRequest",
                         "in": "body",
                         "required": true,
                         "schema": {
@@ -362,8 +942,8 @@ const docTemplate = `{
                             "$ref": "#/definitions/responses.TErrorResponse"
                         }
                     },
-                    "500": {
-                        "description": "Internal Server Error",
+                    "401": {
+                        "description": "Unauthorized",
                         "schema": {
                             "$ref": "#/definitions/responses.TErrorResponse"
                         }
@@ -382,6 +962,13 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
+                        "description": "JWT access token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
                         "description": "User ID",
                         "name": "user_id",
                         "in": "path",
@@ -395,8 +982,8 @@ const docTemplate = `{
                             "$ref": "#/definitions/responses.TSuccessResponse"
                         }
                     },
-                    "500": {
-                        "description": "Internal Server Error",
+                    "401": {
+                        "description": "Unauthorized",
                         "schema": {
                             "$ref": "#/definitions/responses.TErrorResponse"
                         }
@@ -406,79 +993,54 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "request.ItemRequest": {
+        "gorm.DeletedAt": {
             "type": "object",
             "properties": {
-                "description": {
-                    "type": "string",
-                    "example": "Item A"
+                "time": {
+                    "type": "string"
                 },
-                "item_code": {
-                    "type": "string",
-                    "example": "ABC123"
-                },
-                "quantity": {
-                    "type": "integer",
-                    "example": 7
+                "valid": {
+                    "description": "Valid is true if Time is not NULL",
+                    "type": "boolean"
                 }
             }
         },
-        "request.OrderRequest": {
+        "request.CommentRequest": {
             "type": "object",
             "properties": {
-                "customer_name": {
+                "message": {
                     "type": "string",
-                    "example": "Fildza"
-                },
-                "items": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/request.ItemRequest"
-                    }
-                },
-                "ordered_at": {
-                    "type": "string",
-                    "example": "2024-03-10T19:00:00+07:00"
+                    "example": "this is a sample comment message"
                 }
             }
         },
-        "request.UpdateItemRequest": {
+        "request.MediaSocialRequest": {
             "type": "object",
             "properties": {
-                "description": {
+                "media_social_url": {
                     "type": "string",
-                    "example": "Item A"
+                    "example": "https://www.instagram.com/fildzaanf"
                 },
-                "id": {
+                "name": {
                     "type": "string",
-                    "example": "ce135609-1426-4011-bb95-8c475c45fb33"
-                },
-                "item_code": {
-                    "type": "string",
-                    "example": "ABC123"
-                },
-                "quantity": {
-                    "type": "integer",
-                    "example": 7
+                    "example": "instagram"
                 }
             }
         },
-        "request.UpdateOrderRequest": {
+        "request.PhotoRequest": {
             "type": "object",
             "properties": {
-                "customer_name": {
+                "caption": {
                     "type": "string",
-                    "example": "Fildza"
+                    "example": "this is example caption photo"
                 },
-                "items": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/request.UpdateItemRequest"
-                    }
-                },
-                "ordered_at": {
+                "photo_url": {
                     "type": "string",
-                    "example": "2024-03-10T19:00:00+07:00"
+                    "example": "http://example.com/photo.jpg"
+                },
+                "title": {
+                    "type": "string",
+                    "example": "title photo"
                 }
             }
         },
@@ -486,74 +1048,148 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "email": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "hanisahfildza@gmail.com"
                 },
                 "password": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "password123456789"
                 }
             }
         },
         "request.UserRegisterRequest": {
             "type": "object",
             "properties": {
+                "age": {
+                    "type": "integer",
+                    "example": 20
+                },
                 "email": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "hanisahfildza@gmail.com"
                 },
                 "fullname": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "hanisah fildza annafisah"
                 },
                 "password": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "password123456789"
+                },
+                "username": {
+                    "type": "string",
+                    "example": "fildzaanf"
                 }
             }
         },
         "request.UserRequest": {
             "type": "object",
             "properties": {
+                "age": {
+                    "type": "integer",
+                    "example": 20
+                },
                 "email": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "hanisahfildza@gmail.com"
                 },
                 "fullname": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "hanisah fildza annafisah"
                 },
                 "password": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "password123456789"
+                },
+                "username": {
+                    "type": "string",
+                    "example": "fildzaanf"
                 }
             }
         },
-        "response.ItemResponse": {
+        "response.CommentResponse": {
             "type": "object",
             "properties": {
-                "description": {
+                "created_at": {
                     "type": "string"
+                },
+                "deleted_at": {
+                    "$ref": "#/definitions/gorm.DeletedAt"
                 },
                 "id": {
                     "type": "string"
                 },
-                "item_code": {
+                "message": {
                     "type": "string"
                 },
-                "quantity": {
-                    "type": "integer"
+                "photo_id": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                },
+                "user_id": {
+                    "type": "string"
                 }
             }
         },
-        "response.OrderResponse": {
+        "response.MediaSocialResponse": {
             "type": "object",
             "properties": {
-                "customer_name": {
+                "created_at": {
                     "type": "string"
+                },
+                "deleted_at": {
+                    "$ref": "#/definitions/gorm.DeletedAt"
                 },
                 "id": {
                     "type": "string"
                 },
-                "items": {
+                "media_social_url": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                },
+                "user_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "response.PhotoResponse": {
+            "type": "object",
+            "properties": {
+                "caption": {
+                    "type": "string"
+                },
+                "comments": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/response.ItemResponse"
+                        "$ref": "#/definitions/response.CommentResponse"
                     }
                 },
-                "ordered_at": {
+                "created_at": {
+                    "type": "string"
+                },
+                "deleted_at": {
+                    "$ref": "#/definitions/gorm.DeletedAt"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "photo_url": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                },
+                "user_id": {
                     "type": "string"
                 }
             }
@@ -561,6 +1197,21 @@ const docTemplate = `{
         "response.UserLoginResponse": {
             "type": "object",
             "properties": {
+                "age": {
+                    "type": "integer"
+                },
+                "comments": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/response.CommentResponse"
+                    }
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "deleted_at": {
+                    "$ref": "#/definitions/gorm.DeletedAt"
+                },
                 "email": {
                     "type": "string"
                 },
@@ -570,7 +1221,28 @@ const docTemplate = `{
                 "id": {
                     "type": "string"
                 },
+                "media_socials": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/response.MediaSocialResponse"
+                    }
+                },
+                "photos": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/response.PhotoResponse"
+                    }
+                },
+                "role": {
+                    "type": "string"
+                },
                 "token": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                },
+                "username": {
                     "type": "string"
                 }
             }
@@ -578,6 +1250,21 @@ const docTemplate = `{
         "response.UserRegisterResponse": {
             "type": "object",
             "properties": {
+                "age": {
+                    "type": "integer"
+                },
+                "comments": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/response.CommentResponse"
+                    }
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "deleted_at": {
+                    "$ref": "#/definitions/gorm.DeletedAt"
+                },
                 "email": {
                     "type": "string"
                 },
@@ -585,6 +1272,27 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "id": {
+                    "type": "string"
+                },
+                "media_socials": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/response.MediaSocialResponse"
+                    }
+                },
+                "photos": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/response.PhotoResponse"
+                    }
+                },
+                "role": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                },
+                "username": {
                     "type": "string"
                 }
             }
@@ -592,6 +1300,21 @@ const docTemplate = `{
         "response.UserResponse": {
             "type": "object",
             "properties": {
+                "age": {
+                    "type": "integer"
+                },
+                "comments": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/response.CommentResponse"
+                    }
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "deleted_at": {
+                    "$ref": "#/definitions/gorm.DeletedAt"
+                },
                 "email": {
                     "type": "string"
                 },
@@ -601,11 +1324,26 @@ const docTemplate = `{
                 "id": {
                     "type": "string"
                 },
-                "orders": {
+                "media_socials": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/response.OrderResponse"
+                        "$ref": "#/definitions/response.MediaSocialResponse"
                     }
+                },
+                "photos": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/response.PhotoResponse"
+                    }
+                },
+                "role": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
                 }
             }
         },
@@ -646,8 +1384,8 @@ var SwaggerInfo = &swag.Spec{
 	Host:             "localhost:8000",
 	BasePath:         "/",
 	Schemes:          []string{},
-	Title:            "Orders API",
-	Description:      "This is a simple service for managing orders",
+	Title:            "MyGram API",
+	Description:      "This is a simple service for media social",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
 	LeftDelim:        "{{",

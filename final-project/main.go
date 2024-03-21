@@ -16,9 +16,9 @@ import (
 	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
-// @title Orders API
+// @title MyGram API
 // @version 1.0
-// @description This is a simple service for managing orders
+// @description This is a simple service for media social
 // @termsOfService http://swagger.io/terms/
 // @host localhost:8000
 // @BasePath /
@@ -30,8 +30,8 @@ func main() {
 		logrus.Fatalf("failed to load configuration: %v", err)
 	}
 
-	docs.SwaggerInfo.Title = "Swagger Orders API"
-	docs.SwaggerInfo.Description = "This is a simple service for managing orders."
+	docs.SwaggerInfo.Title = "Swagger MyGram API"
+	docs.SwaggerInfo.Description = "This is a simple service for media social"
 	docs.SwaggerInfo.Version = "1.0"
 	docs.SwaggerInfo.Host = "localhost:8000"
 	docs.SwaggerInfo.BasePath = "/"
