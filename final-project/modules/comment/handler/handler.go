@@ -22,7 +22,19 @@ func NewCommentHandler(commentService entity.CommentServiceInterface) *commentHa
 	}
 }
 
-
+// CreateComment godoc
+// @Summary Create a new comment
+// @Description Create a new comment with the provided comment data
+// @Tags comments
+// @Accept json
+// @Produce json
+// @Param Authorization header string true "JWT access token"
+// @Param commentRequest body request.CommentRequest true "Comment data"
+// @Success 201 {object} response.CommentResponse
+// @Success 201 {object} responses.TSuccessResponse
+// @Failure 400 {object} responses.TErrorResponse
+// @Failure 401 {object} responses.TErrorResponse
+// @Router /comments [post]
 func (ch *commentHandler) CreateComment(c *gin.Context) {
 
 	userID, role, errExtract := middlewares.VerifyToken(c)
@@ -60,7 +72,17 @@ func (ch *commentHandler) CreateComment(c *gin.Context) {
 }
 
 
-
+// GetAllComments godoc
+// @Summary Get all comments
+// @Description Retrieve all comments
+// @Tags comments
+// @Produce json
+// @Param Authorization header string true "JWT access token"
+// @Success 200 {object} response.CommentResponse
+// @Success 200 {object} responses.TSuccessResponse
+// @Failure 401 {object} responses.TErrorResponse
+// @Failure 500 {object} responses.TErrorResponse
+// @Router /comments [get]
 func (ch *commentHandler) GetAllComments(c *gin.Context) {
 
 	userID, role, errExtract := middlewares.VerifyToken(c)
@@ -68,7 +90,7 @@ func (ch *commentHandler) GetAllComments(c *gin.Context) {
 		c.JSON(http.StatusUnauthorized, responses.ErrorResponse(errExtract.Error()))
 		return
 	}
-	
+
 	if role != constant.USER {
 		c.JSON(http.StatusUnauthorized, responses.ErrorResponse("not authorized to access this resource"))
 		return
@@ -90,7 +112,18 @@ func (ch *commentHandler) GetAllComments(c *gin.Context) {
 	c.JSON(http.StatusOK, responses.SuccessResponse("comments data retrieved successfully", commentResponse))
 }
 
-
+// GetCommentByID godoc
+// @Summary Get comment by ID
+// @Description Retrieve comment details by comment ID
+// @Tags comments
+// @Produce json
+// @Param Authorization header string true "JWT access token"
+// @Param comment_id path string true "Comment ID"
+// @Success 200 {object} response.CommentResponse
+// @Success 200 {object} responses.TSuccessResponse
+// @Failure 400 {object} responses.TErrorResponse
+// @Failure 401 {object} responses.TErrorResponse
+// @Router /comments/{comment_id} [get]
 func (ch *commentHandler) GetCommentByID(c *gin.Context) {
 	commentID := c.Param("comment_id")
 
@@ -121,7 +154,20 @@ func (ch *commentHandler) GetCommentByID(c *gin.Context) {
 	c.JSON(http.StatusOK, responses.SuccessResponse("comment data retrieved successfully", commentResponse))
 }
 
-
+// UpdateCommentByID godoc
+// @Summary Update comment by ID
+// @Description Update comment details by comment ID
+// @Tags comments
+// @Accept json
+// @Produce json
+// @Param Authorization header string true "JWT access token"
+// @Param comment_id path string true "Comment ID"
+// @Param commentRequest body request.CommentRequest true "Comment details"
+// @Success 200 {object} response.CommentResponse
+// @Success 200 {object} responses.TSuccessResponse
+// @Failure 400 {object} responses.TErrorResponse
+// @Failure 401 {object} responses.TErrorResponse
+// @Router /comments/{comment_id} [put]
 func (ch *commentHandler) UpdateCommentByID(c *gin.Context) {
 	commentID := c.Param("comment_id")
 
@@ -168,7 +214,18 @@ func (ch *commentHandler) UpdateCommentByID(c *gin.Context) {
 	c.JSON(http.StatusOK, responses.SuccessResponse("comment data updated successfully", commentResponse))
 }
 
-
+// DeleteCommentByID godoc
+// @Summary Delete comment by ID
+// @Description Delete comment by comment ID
+// @Tags comments
+// @Produce json
+// @Param Authorization header string true "JWT access token"
+// @Param comment_id path string true "Comment ID"
+// @Success 200 {object} responses.TSuccessResponse
+// @Failure 401 {object} responses.TErrorResponse
+// @Failure 400 {object} responses.TErrorResponse
+// @Failure 500 {object} responses.TErrorResponse
+// @Router /comments/{comment_id} [delete]
 func (ch *commentHandler) DeleteCommentByID(c *gin.Context) {
 	commentID := c.Param("comment_id")
 
@@ -198,5 +255,6 @@ func (ch *commentHandler) DeleteCommentByID(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, responses.ErrorResponse(errDelete.Error()))
 		return
 	}
+
 	c.JSON(http.StatusOK, responses.SuccessResponse("comment data deleted successfully", nil))
 }

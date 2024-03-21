@@ -24,14 +24,14 @@ func NewUserHandler(us entity.UserServiceInterface) *userHandler {
 
 // Register godoc
 // @Summary Register a new user
-// @Description Register a new user with the provided user data
-// @Tags users
+// @Description Register a new user with the provided data
+// @Tags accounts
 // @Accept json
 // @Produce json
-// @Param registerRequest body request.UserRegisterRequest true "User data"
+// @Param userRegisterRequest body request.UserRegisterRequest true "User data for registration"
 // @Success 201 {object} response.UserRegisterResponse
 // @Failure 400 {object} responses.TErrorResponse
-// @Router /users/register [post]
+// @Router /accounts/register [post]
 func (uh *userHandler) Register(c *gin.Context) {
 	registerRequest := request.UserRegisterRequest{}
 
@@ -54,15 +54,15 @@ func (uh *userHandler) Register(c *gin.Context) {
 }
 
 // Login godoc
-// @Summary Log in a user
-// @Description Log in a user with the provided credentials
-// @Tags users
+// @Summary Login user
+// @Description Login user with provided email and password
+// @Tags accounts
 // @Accept json
 // @Produce json
-// @Param loginRequest body request.UserLoginRequest true "Login credentials"
+// @Param userLoginRequest body request.UserLoginRequest true "User login credentials"
 // @Success 200 {object} response.UserLoginResponse
 // @Failure 400 {object} responses.TErrorResponse
-// @Router /users/login [post]
+// @Router /accounts/login [post]
 func (uh *userHandler) Login(c *gin.Context) {
 	loginRequest := request.UserLoginRequest{}
 
@@ -87,8 +87,9 @@ func (uh *userHandler) Login(c *gin.Context) {
 // @Description Retrieve all users
 // @Tags users
 // @Produce json
-// @Success 200 {object} responses.TSuccessResponse
-// @Failure 500 {object} responses.TErrorResponse
+// @Param Authorization header string true "JWT access token"
+// @Success 200 {object} response.UserResponse
+// @Failure 401 {object} responses.TErrorResponse
 // @Router /users [get]
 func (uh *userHandler) GetAllUsers(c *gin.Context) {
 
@@ -123,10 +124,11 @@ func (uh *userHandler) GetAllUsers(c *gin.Context) {
 // @Description Retrieve user details by user ID
 // @Tags users
 // @Produce json
+// @Param Authorization header string true "JWT access token"
 // @Param user_id path string true "User ID"
 // @Success 200 {object} response.UserResponse
 // @Failure 400 {object} responses.TErrorResponse
-// @Failure 500 {object} responses.TErrorResponse
+// @Failure 401 {object} responses.TErrorResponse
 // @Router /users/{user_id} [get]
 func (uh *userHandler) GetUserByID(c *gin.Context) {
 	pathUserID := c.Param("user_id")
@@ -162,11 +164,12 @@ func (uh *userHandler) GetUserByID(c *gin.Context) {
 // @Tags users
 // @Accept json
 // @Produce json
+// @Param Authorization header string true "JWT access token"
 // @Param user_id path string true "User ID"
-// @Param updateUserRequest body request.UserRequest true "User details"
+// @Param userRequest body request.UserRequest true "User details"
 // @Success 200 {object} response.UserResponse
 // @Failure 400 {object} responses.TErrorResponse
-// @Failure 500 {object} responses.TErrorResponse
+// @Failure 401 {object} responses.TErrorResponse
 // @Router /users/{user_id} [put]
 func (uh *userHandler) UpdateUserByID(c *gin.Context) {
 	pathUserID := c.Param("user_id")
@@ -211,9 +214,10 @@ func (uh *userHandler) UpdateUserByID(c *gin.Context) {
 // @Description Delete user by user ID
 // @Tags users
 // @Produce json
+// @Param Authorization header string true "JWT access token"
 // @Param user_id path string true "User ID"
 // @Success 200 {object} responses.TSuccessResponse
-// @Failure 500 {object} responses.TErrorResponse
+// @Failure 401 {object} responses.TErrorResponse
 // @Router /users/{user_id} [delete]
 func (uh *userHandler) DeleteUserByID(c *gin.Context) {
 	pathUserID := c.Param("user_id")

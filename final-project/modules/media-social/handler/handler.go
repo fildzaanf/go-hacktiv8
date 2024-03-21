@@ -22,7 +22,18 @@ func NewMediaSocialHandler(mediaSocialService entity.MediaSocialServiceInterface
 	}
 }
 
-
+// CreateMediaSocial godoc
+// @Summary Create a new media social entry
+// @Description Create a new media social entry with the provided data
+// @Tags media-social
+// @Accept json
+// @Produce json
+// @Param Authorization header string true "JWT access token"
+// @Param mediaSocialRequest body request.MediaSocialRequest true "Media Social data"
+// @Success 201 {object} response.MediaSocialResponse
+// @Failure 400 {object} responses.TErrorResponse
+// @Failure 401 {object} responses.TErrorResponse
+// @Router /media-social [post]
 func (mh *mediaSocialHandler) CreateMediaSocial(c *gin.Context) {
 	userID, role, errExtract := middlewares.VerifyToken(c)
 	if errExtract != nil {
@@ -46,7 +57,7 @@ func (mh *mediaSocialHandler) CreateMediaSocial(c *gin.Context) {
 	mediaSocialCore := request.MediaSocialRequestToMediaSocialCore(MediaSocialRequest)
 	
 	mediaSocialCore.UserID = userID
-	
+
 	mediaSocialData, errCreate := mh.mediaSocialService.CreateMediaSocial(mediaSocialCore)
 	if errCreate != nil {
 		c.JSON(http.StatusBadRequest, responses.ErrorResponse(errCreate.Error()))
@@ -58,7 +69,15 @@ func (mh *mediaSocialHandler) CreateMediaSocial(c *gin.Context) {
 	c.JSON(http.StatusCreated, responses.SuccessResponse("media social data created successfully", mediaSocialResponse))
 }
 
-
+// GetAllMediaSocials godoc
+// @Summary Get all media social entries
+// @Description Retrieve all media social entries
+// @Tags media-social
+// @Produce json
+// @Param Authorization header string true "JWT access token"
+// @Success 200 {object} response.MediaSocialResponse
+// @Failure 401 {object} responses.TErrorResponse
+// @Router /media-social [get]
 func (mh *mediaSocialHandler) GetAllMediaSocials(c *gin.Context) {
 
 	userID, role, errExtract := middlewares.VerifyToken(c)
@@ -87,7 +106,17 @@ func (mh *mediaSocialHandler) GetAllMediaSocials(c *gin.Context) {
 	c.JSON(http.StatusOK, responses.SuccessResponse("media socials data retrieved successfully", mediaSocialResponse))
 }
 
-
+// GetMediaSocialByID godoc
+// @Summary Get media social entry by ID
+// @Description Retrieve media social entry details by media social ID
+// @Tags media-social
+// @Produce json
+// @Param Authorization header string true "JWT access token"
+// @Param medsos_id path string true "Media Social ID"
+// @Success 200 {object} response.MediaSocialResponse
+// @Failure 400 {object} responses.TErrorResponse
+// @Failure 401 {object} responses.TErrorResponse
+// @Router /media-social/{medsos_id} [get]
 func (mh *mediaSocialHandler) GetMediaSocialByID(c *gin.Context) {
 	mediaSocialID := c.Param("medsos_id")
 
@@ -118,7 +147,19 @@ func (mh *mediaSocialHandler) GetMediaSocialByID(c *gin.Context) {
 	c.JSON(http.StatusOK, responses.SuccessResponse("media social data retrieved successfully", mediaSocialResponse))
 }
 
-
+// UpdateMediaSocialByID godoc
+// @Summary Update media social entry by ID
+// @Description Update media social entry details by media social ID
+// @Tags media-social
+// @Accept json
+// @Produce json
+// @Param Authorization header string true "JWT access token"
+// @Param medsos_id path string true "Media Social ID"
+// @Param mediaSocialRequest body request.MediaSocialRequest true "Media Social details"
+// @Success 200 {object} response.MediaSocialResponse
+// @Failure 400 {object} responses.TErrorResponse
+// @Failure 401 {object} responses.TErrorResponse
+// @Router /media-social/{medsos_id} [put]
 func (mh *mediaSocialHandler) UpdateMediaSocialByID(c *gin.Context) {
 	mediaSocialID := c.Param("medsos_id")
 
@@ -165,7 +206,16 @@ func (mh *mediaSocialHandler) UpdateMediaSocialByID(c *gin.Context) {
 	c.JSON(http.StatusOK, responses.SuccessResponse("media social data updated successfully", mediaSocialResponse))
 }
 
-
+// DeleteMediaSocialByID godoc
+// @Summary Delete media social entry by ID
+// @Description Delete media social entry by media social ID
+// @Tags media-social
+// @Produce json
+// @Param Authorization header string true "JWT access token"
+// @Param medsos_id path string true "Media Social ID"
+// @Success 200 {object} responses.TSuccessResponse
+// @Failure 401 {object} responses.TErrorResponse
+// @Router /media-social/{medsos_id} [delete]
 func (mh *mediaSocialHandler) DeleteMediaSocialByID(c *gin.Context) {
 	mediaSocialID := c.Param("medsos_id")
 

@@ -22,7 +22,18 @@ func NewPhotoHandler(photoService entity.PhotoServiceInterface) *photoHandler {
 	}
 }
 
-
+// CreatePhoto godoc
+// @Summary Create a new photo
+// @Description Create a new photo with the provided photo data
+// @Tags photos
+// @Accept json
+// @Produce json
+// @Param Authorization header string true "JWT access token"
+// @Param photoRequest body request.PhotoRequest true "Photo data"
+// @Success 201 {object} response.PhotoResponse
+// @Failure 400 {object} responses.TErrorResponse
+// @Failure 401 {object} responses.TErrorResponse
+// @Router /photos [post]
 func (ph *photoHandler) CreatePhoto(c *gin.Context) {
 
 	userID, role, errExtract := middlewares.VerifyToken(c)
@@ -59,7 +70,15 @@ func (ph *photoHandler) CreatePhoto(c *gin.Context) {
 	c.JSON(http.StatusCreated, responses.SuccessResponse("photo data created successfully", photoResponse))
 }
 
-
+// GetAllPhotos godoc
+// @Summary Get all photos
+// @Description Retrieve all photos
+// @Tags photos
+// @Produce json
+// @Param Authorization header string true "JWT access token"
+// @Success 200 {object} response.PhotoResponse
+// @Failure 401 {object} responses.TErrorResponse
+// @Router /photos [get]
 func (ph *photoHandler) GetAllPhotos(c *gin.Context) {
 
 	userID, role, errExtract := middlewares.VerifyToken(c)
@@ -91,6 +110,17 @@ func (ph *photoHandler) GetAllPhotos(c *gin.Context) {
 	c.JSON(http.StatusOK, responses.SuccessResponse("photos data retrieved successfully", photoResponse))
 }
 
+// GetPhotoByID godoc
+// @Summary Get photo by ID
+// @Description Retrieve photo details by photo ID
+// @Tags photos
+// @Produce json
+// @Param Authorization header string true "JWT access token"
+// @Param photo_id path string true "Photo ID"
+// @Success 200 {object} response.PhotoResponse
+// @Failure 400 {object} responses.TErrorResponse
+// @Failure 401 {object} responses.TErrorResponse
+// @Router /photos/{photo_id} [get]
 func (ph *photoHandler) GetPhotoByID(c *gin.Context) {
 	photoID := c.Param("photo_id")
 
@@ -121,6 +151,19 @@ func (ph *photoHandler) GetPhotoByID(c *gin.Context) {
 	c.JSON(http.StatusOK, responses.SuccessResponse("photo data retrieved successfully", photoResponse))
 }
 
+// UpdatePhotoByID godoc
+// @Summary Update photo by ID
+// @Description Update photo details by photo ID
+// @Tags photos
+// @Accept json
+// @Produce json
+// @Param Authorization header string true "JWT access token"
+// @Param photo_id path string true "Photo ID"
+// @Param photoRequest body request.PhotoRequest true "Photo details"
+// @Success 200 {object} response.PhotoResponse
+// @Failure 400 {object} responses.TErrorResponse
+// @Failure 401 {object} responses.TErrorResponse
+// @Router /photos/{photo_id} [put]
 func (ph *photoHandler) UpdatePhotoByID(c *gin.Context) {
 	photoID := c.Param("photo_id")
 
@@ -167,6 +210,16 @@ func (ph *photoHandler) UpdatePhotoByID(c *gin.Context) {
 	c.JSON(http.StatusOK, responses.SuccessResponse("photo data updated successfully", photoResponse))
 }
 
+// DeletePhotoByID godoc
+// @Summary Delete photo by ID
+// @Description Delete photo by photo ID
+// @Tags photos
+// @Produce json
+// @Param Authorization header string true "JWT access token"
+// @Param photo_id path string true "Photo ID"
+// @Success 200 {object} responses.TSuccessResponse
+// @Failure 401 {object} responses.TErrorResponse
+// @Router /photos/{photo_id} [delete]
 func (ph *photoHandler) DeletePhotoByID(c *gin.Context) {
 	photoID := c.Param("photo_id")
 
