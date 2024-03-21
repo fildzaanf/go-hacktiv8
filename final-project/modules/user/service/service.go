@@ -1,11 +1,11 @@
 package service
 
 import (
+	"errors"
 	"final-project/middlewares"
 	"final-project/modules/user/entity"
 	"final-project/utils/helper/bcrypt"
 	"final-project/utils/validator"
-	"errors"
 )
 
 type userService struct {
@@ -37,7 +37,7 @@ func (us *userService) Register(userCore entity.User) (entity.User, error) {
 
 	_, errGetUname := us.userRepository.GetUserByUsername(userCore.Username)
 	if errGetUname == nil {
-		return entity.User{},  errors.New("username already exists")
+		return entity.User{}, errors.New("username already exists")
 	}
 
 	_, errGetEmail := us.userRepository.GetUserByEmail(userCore.Email)
@@ -144,9 +144,39 @@ func (us *userService) UpdateUserByID(userID string, userCore entity.User) (enti
 		return entity.User{}, errors.New("user not found")
 	}
 
-	errEmailValid := validator.IsEmailValid(userCore.Email)
-	if errEmailValid != nil {
-		return entity.User{}, errEmailValid
+	if userCore.Email != "" {
+
+		errEmailValid := validator.IsEmailValid(userCore.Email)
+		if errEmailValid != nil {
+			return entity.User{}, errEmailValid
+		}
+
+		_, errGetEmail := us.userRepository.GetUserByEmail(userCore.Email)
+		if errGetEmail == nil {
+			return entity.User{}, errors.New("email already exists")
+		}
+	}
+
+	if userCore.Password != "" {
+		
+		errLength := validator.IsMinLengthValid(userCore.Password, 10)
+		if errLength != nil {
+			return entity.User{}, errLength
+		}
+
+		hashedPassword, errHash := bcrypt.HashPassword(userCore.Password)
+		if errHash != nil {
+			return entity.User{}, errors.New("error hashing password")
+		}
+		userCore.Password = hashedPassword
+
+	}
+
+	if userCore.Username != "" {
+		_, errGetUname := us.userRepository.GetUserByUsername(userCore.Username)
+		if errGetUname == nil {
+			return entity.User{}, errors.New("username already exists")
+		}
 	}
 
 	userData, errUpdate := us.userRepository.UpdateUserByID(userID, userCore)

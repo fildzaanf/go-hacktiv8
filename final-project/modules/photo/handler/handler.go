@@ -141,7 +141,7 @@ func (ph *photoHandler) GetPhotoByID(c *gin.Context) {
 		return
 	}
 
-	if userID != photo.ID {
+	if userID != photo.UserID {
 		c.JSON(http.StatusUnauthorized, responses.ErrorResponse("not authorized to access this resource"))
 		return
 	}
@@ -184,7 +184,7 @@ func (ph *photoHandler) UpdatePhotoByID(c *gin.Context) {
 		return
 	}
 
-	if userID != photo.ID {
+	if userID != photo.UserID {
 		c.JSON(http.StatusUnauthorized, responses.ErrorResponse("not authorized to access this resource"))
 		return
 	}
@@ -239,7 +239,7 @@ func (ph *photoHandler) DeletePhotoByID(c *gin.Context) {
 		return
 	}
 
-	if userID != photo.ID {
+	if userID != photo.UserID {
 		c.JSON(http.StatusUnauthorized, responses.ErrorResponse("not authorized to access this resource"))
 		return
 	}

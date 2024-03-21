@@ -137,7 +137,7 @@ func (mh *mediaSocialHandler) GetMediaSocialByID(c *gin.Context) {
 		return
 	}
 
-	if userID != mediaSocial.ID {
+	if userID != mediaSocial.UserID {
 		c.JSON(http.StatusUnauthorized, responses.ErrorResponse("not authorized to access this resource"))
 		return
 	}
@@ -180,7 +180,7 @@ func (mh *mediaSocialHandler) UpdateMediaSocialByID(c *gin.Context) {
 		return
 	}
 
-	if userID != mediaSocial.ID {
+	if userID != mediaSocial.UserID {
 		c.JSON(http.StatusUnauthorized, responses.ErrorResponse("not authorized to access this resource"))
 		return
 	}
@@ -235,7 +235,7 @@ func (mh *mediaSocialHandler) DeleteMediaSocialByID(c *gin.Context) {
 		return
 	}
 
-	if userID != mediaSocial.ID {
+	if userID != mediaSocial.UserID {
 		c.JSON(http.StatusUnauthorized, responses.ErrorResponse("not authorized to access this resource"))
 		return
 	}

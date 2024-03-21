@@ -16,7 +16,7 @@ func NewCommentService(commentRepository entity.CommentRepositoryInterface) enti
 	}
 }
 
-func (cs *commentService) CreateComment(commentCore entity.Comment) (entity.Comment, error) {
+func (cs *commentService) CreateComment(photoID string, commentCore entity.Comment) (entity.Comment, error) {
 
 	errEmpty := validator.IsDataEmpty(commentCore.Message)
 	if errEmpty != nil {
@@ -28,7 +28,7 @@ func (cs *commentService) CreateComment(commentCore entity.Comment) (entity.Comm
 		return entity.Comment{}, errLength
 	}
 
-	commentsData, errCreate := cs.commentRepository.CreateComment(commentCore)
+	commentsData, errCreate := cs.commentRepository.CreateComment(photoID, commentCore)
 	if errCreate != nil {
 		return entity.Comment{}, errCreate
 	}

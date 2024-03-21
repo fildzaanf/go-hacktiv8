@@ -23,6 +23,7 @@ func UserRoutes(r *gin.RouterGroup, db *gorm.DB) {
 
 	user := r.Group("/users", middlewares.JWTMiddleware())
 	{
+		user.GET("", userHandler.GetAllUsers)
 		user.GET("/:user_id", userHandler.GetUserByID)
 		user.PUT("/:user_id", userHandler.UpdateUserByID)
 		user.DELETE("/:user_id", userHandler.DeleteUserByID)

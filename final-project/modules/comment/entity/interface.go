@@ -3,7 +3,7 @@ package entity
 import "github.com/gin-gonic/gin"
 
 type CommentRepositoryInterface interface {
-	CreateComment(commentCore Comment) (Comment, error)
+	CreateComment(photoID string, commentCore Comment) (Comment, error)
 	GetCommentByID(commentID string) (Comment, error)
 	GetAllComments(userID string) ([]Comment, error)
 	UpdateCommentByID(commentID string, commentCore Comment) (Comment, error)
@@ -11,7 +11,7 @@ type CommentRepositoryInterface interface {
 }
 
 type CommentServiceInterface interface {
-	CreateComment(commentCore Comment) (Comment, error)
+	CreateComment(photoID string, commentCore Comment) (Comment, error)
 	GetCommentByID(commentID string) (Comment, error)
 	GetAllComments(userID string) ([]Comment, error)
 	UpdateCommentByID(commentID string, commentCore Comment) (Comment, error)

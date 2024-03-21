@@ -36,6 +36,7 @@ func NewCommentHandler(commentService entity.CommentServiceInterface) *commentHa
 // @Failure 401 {object} responses.TErrorResponse
 // @Router /comments [post]
 func (ch *commentHandler) CreateComment(c *gin.Context) {
+	photoID := c.Param("photo_id")
 
 	userID, role, errExtract := middlewares.VerifyToken(c)
 	if errExtract != nil {
@@ -60,7 +61,7 @@ func (ch *commentHandler) CreateComment(c *gin.Context) {
 
 	commentCore.UserID = userID
 
-	commentData, errCreate := ch.commentService.CreateComment(commentCore)
+	commentData, errCreate := ch.commentService.CreateComment(photoID, commentCore)
 	if errCreate != nil {
 		c.JSON(http.StatusBadRequest, responses.ErrorResponse(errCreate.Error()))
 		return
@@ -143,7 +144,7 @@ func (ch *commentHandler) GetCommentByID(c *gin.Context) {
 		return
 	}
 
-	if userID != comment.ID {
+	if userID != comment.UserID {
 		c.JSON(http.StatusUnauthorized, responses.ErrorResponse("not authorizeds to access this resource"))
 		return
 	}
@@ -187,7 +188,7 @@ func (ch *commentHandler) UpdateCommentByID(c *gin.Context) {
 		return
 	}
 
-	if userID != comment.ID {
+	if userID != comment.UserID {
 		c.JSON(http.StatusUnauthorized, responses.ErrorResponse("not authorizeds to access this resource"))
 		return
 	}
@@ -244,7 +245,7 @@ func (ch *commentHandler) DeleteCommentByID(c *gin.Context) {
 		return
 	}
 
-	if userID != comment.ID {
+	if userID != comment.UserID {
 		c.JSON(http.StatusUnauthorized, responses.ErrorResponse("not authorizeds to access this resource"))
 		return
 	}

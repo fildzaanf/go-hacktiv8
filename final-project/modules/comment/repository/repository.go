@@ -4,29 +4,40 @@ import (
 	"errors"
 	"final-project/modules/comment/entity"
 	"final-project/modules/comment/model"
+	ep "final-project/modules/photo/entity"
 
 	"gorm.io/gorm"
 )
 
 type commentRepository struct {
-	db *gorm.DB
+	db              *gorm.DB
+	photoRepository ep.PhotoRepositoryInterface
 }
 
-func NewCommentRepository(db *gorm.DB) entity.CommentRepositoryInterface {
+func NewCommentRepository(db *gorm.DB, photoRepository ep.PhotoRepositoryInterface) entity.CommentRepositoryInterface {
 	return &commentRepository{
-		db: db,
+		db:              db,
+		photoRepository: photoRepository,
 	}
 }
 
-func (cr *commentRepository) CreateComment(commentCore entity.Comment) (entity.Comment, error) {
-	commentModelRequest := entity.CommentCoreToCommentModel(commentCore)
+func (cr *commentRepository) CreateComment(photoID string, commentCore entity.Comment) (entity.Comment, error) {
 
-	tx := cr.db.Create(&commentModelRequest)
+	photo, err := cr.photoRepository.GetPhotoByID(photoID)
+	if err != nil {
+		return entity.Comment{}, err
+	}
+
+	commentModel := entity.CommentCoreToCommentModel(commentCore)
+
+	commentModel.PhotoID = photo.ID
+
+	tx := cr.db.Create(&commentModel)
 	if tx.Error != nil {
 		return entity.Comment{}, tx.Error
 	}
 
-	commentCoreResponse := entity.CommentModelToCommentCore(commentModelRequest)
+	commentCoreResponse := entity.CommentModelToCommentCore(commentModel)
 	return commentCoreResponse, nil
 }
 
@@ -51,7 +62,7 @@ func (cr *commentRepository) GetCommentByID(commentID string) (entity.Comment, e
 	}
 
 	if tx.RowsAffected == 0 {
-		return entity.Comment{}, errors.New("data not found")
+		return entity.Comment{}, errors.New("photo data not found")
 	}
 
 	commentCoreResponse := entity.CommentModelToCommentCore(commentModel)
@@ -67,7 +78,7 @@ func (cr *commentRepository) UpdateCommentByID(commentID string, commentCore ent
 	}
 
 	if tx.RowsAffected == 0 {
-		return entity.Comment{}, errors.New("data not found")
+		return entity.Comment{}, errors.New("photo data not found")
 	}
 
 	updatedCommentModel := entity.CommentCoreToCommentModel(commentCore)
@@ -90,7 +101,7 @@ func (cr *commentRepository) DeleteCommentByID(commentID string) error {
 	}
 
 	if tx.RowsAffected == 0 {
-		return errors.New("data not found")
+		return errors.New("photo data not found")
 	}
 	return nil
 }

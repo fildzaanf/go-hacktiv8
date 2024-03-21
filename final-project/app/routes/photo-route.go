@@ -19,9 +19,9 @@ func PhotoRoutes(r *gin.RouterGroup, db *gorm.DB) {
 	{
 		photo.POST("", photoHandler.CreatePhoto)
 		photo.GET("", photoHandler.GetAllPhotos)
-		photo.GET(":photo_id", photoHandler.GetPhotoByID)
-		photo.PUT(":photo_id", photoHandler.UpdatePhotoByID)
-		photo.DELETE(":photo_id", photoHandler.DeletePhotoByID)
+		photo.GET("/:photo_id", photoHandler.GetPhotoByID)
+		photo.PUT("/:photo_id", photoHandler.UpdatePhotoByID)
+		photo.DELETE("/:photo_id", photoHandler.DeletePhotoByID)
 
 	}
 }
