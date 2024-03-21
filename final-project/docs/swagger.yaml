@@ -343,40 +343,6 @@ paths:
       summary: Get all comments
       tags:
       - comments
-    post:
-      consumes:
-      - application/json
-      description: Create a new comment with the provided comment data
-      parameters:
-      - description: JWT access token
-        in: header
-        name: Authorization
-        required: true
-        type: string
-      - description: Comment data
-        in: body
-        name: commentRequest
-        required: true
-        schema:
-          $ref: '#/definitions/request.CommentRequest'
-      produces:
-      - application/json
-      responses:
-        "201":
-          description: Created
-          schema:
-            $ref: '#/definitions/responses.TSuccessResponse'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/responses.TErrorResponse'
-        "401":
-          description: Unauthorized
-          schema:
-            $ref: '#/definitions/responses.TErrorResponse'
-      summary: Create a new comment
-      tags:
-      - comments
   /comments/{comment_id}:
     delete:
       description: Delete comment by comment ID
@@ -481,6 +447,46 @@ paths:
           schema:
             $ref: '#/definitions/responses.TErrorResponse'
       summary: Update comment by ID
+      tags:
+      - comments
+  /comments/{photo_id}:
+    post:
+      consumes:
+      - application/json
+      description: Create a new comment with the provided comment data
+      parameters:
+      - description: JWT access token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Photoc ID
+        in: path
+        name: photo_id
+        required: true
+        type: string
+      - description: Comment data
+        in: body
+        name: commentRequest
+        required: true
+        schema:
+          $ref: '#/definitions/request.CommentRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/responses.TSuccessResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/responses.TErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/responses.TErrorResponse'
+      summary: Create a new comment
       tags:
       - comments
   /media-social:

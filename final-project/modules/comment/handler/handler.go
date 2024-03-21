@@ -29,12 +29,13 @@ func NewCommentHandler(commentService entity.CommentServiceInterface) *commentHa
 // @Accept json
 // @Produce json
 // @Param Authorization header string true "JWT access token"
+// @Param photo_id path string true "Photoc ID"
 // @Param commentRequest body request.CommentRequest true "Comment data"
 // @Success 201 {object} response.CommentResponse
 // @Success 201 {object} responses.TSuccessResponse
 // @Failure 400 {object} responses.TErrorResponse
 // @Failure 401 {object} responses.TErrorResponse
-// @Router /comments [post]
+// @Router /comments/{photo_id} [post]
 func (ch *commentHandler) CreateComment(c *gin.Context) {
 	photoID := c.Param("photo_id")
 

@@ -22,6 +22,5 @@ func MediaSocialRoutes(r *gin.RouterGroup, db *gorm.DB) {
 		medsos.GET("/:medsos_id", medsosHandler.GetMediaSocialByID)
 		medsos.PUT("/:medsos_id", medsosHandler.UpdateMediaSocialByID)
 		medsos.DELETE("/:medsos_id", medsosHandler.DeleteMediaSocialByID)
-
 	}
 }
