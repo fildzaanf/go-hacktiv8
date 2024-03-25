@@ -706,9 +706,9 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "OTP verification successfully",
+                        "description": "OK",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/response.UserResponse"
                         }
                     },
                     "400": {
@@ -886,7 +886,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/request.PhotoRequest"
+                            "$ref": "#/definitions/request.PhotoUpdateRequest"
                         }
                     }
                 ],
@@ -1186,6 +1186,19 @@ const docTemplate = `{
                 }
             }
         },
+        "request.PhotoUpdateRequest": {
+            "type": "object",
+            "properties": {
+                "caption": {
+                    "type": "string",
+                    "example": "this is example caption photo"
+                },
+                "title": {
+                    "type": "string",
+                    "example": "title photo"
+                }
+            }
+        },
         "request.UserLoginRequest": {
             "type": "object",
             "properties": {
@@ -1247,7 +1260,7 @@ const docTemplate = `{
                 },
                 "confirm_password": {
                     "type": "string",
-                    "example": "password123456789"
+                    "example": "password12345678910"
                 },
                 "email": {
                     "type": "string",
@@ -1256,6 +1269,10 @@ const docTemplate = `{
                 "fullname": {
                     "type": "string",
                     "example": "hanisah fildza annafisah"
+                },
+                "new_password": {
+                    "type": "string",
+                    "example": "password12345678910"
                 },
                 "password": {
                     "type": "string",

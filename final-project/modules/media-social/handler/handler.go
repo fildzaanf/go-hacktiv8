@@ -120,7 +120,7 @@ func (mh *mediaSocialHandler) GetAllMediaSocials(c *gin.Context) {
 func (mh *mediaSocialHandler) GetMediaSocialByID(c *gin.Context) {
 	mediaSocialID := c.Param("medsos_id")
 
-	userID, role, errExtract := middlewares.ExtractToken(c)
+	_, role, errExtract := middlewares.ExtractToken(c)
 	if errExtract != nil {
 		c.JSON(http.StatusUnauthorized, responses.ErrorResponse(errExtract.Error()))
 		return
@@ -134,11 +134,6 @@ func (mh *mediaSocialHandler) GetMediaSocialByID(c *gin.Context) {
 	mediaSocial, errGetID := mh.mediaSocialService.GetMediaSocialByID(mediaSocialID)
 	if errGetID != nil {
 		c.JSON(http.StatusBadRequest, responses.ErrorResponse(errGetID.Error()))
-		return
-	}
-
-	if userID != mediaSocial.UserID {
-		c.JSON(http.StatusUnauthorized, responses.ErrorResponse("not authorized to access this resource"))
 		return
 	}
 

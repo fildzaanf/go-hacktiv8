@@ -154,7 +154,7 @@ func (ph *photoHandler) GetPhotoByID(c *gin.Context) {
 // @Produce json
 // @Param Authorization header string true "JWT access token"
 // @Param photo_id path string true "Photo ID"
-// @Param photoRequest body request.PhotoRequest true "Photo details"
+// @Param photoRequest body request.PhotoUpdateRequest true "Photo details"
 // @Success 200 {object} response.PhotoResponse
 // @Failure 400 {object} responses.TErrorResponse
 // @Failure 401 {object} responses.TErrorResponse

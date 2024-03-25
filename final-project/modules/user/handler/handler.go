@@ -287,6 +287,7 @@ func (uh *userHandler) ForgotPassword(c *gin.Context) {
 // @Produce json
 // @Param userRequest body request.UserVerifyOTPRequest true "User email and OTP for verification"
 // @Success 200 {string} string "OTP verification successfully"
+// @Success 200 {object} response.UserResponse
 // @Failure 400 {object} responses.TErrorResponse
 // @Router /password/verify-otp [post]
 func (uh *userHandler) VerifyOTP(c *gin.Context) {

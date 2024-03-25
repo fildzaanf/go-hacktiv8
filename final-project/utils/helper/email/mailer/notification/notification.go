@@ -56,7 +56,7 @@ func SendEmailNotificationRegisterAccount(emailAddress string) {
 
 		_, errEmail := EmailNotificationAccount([]string{emailAddress}, string(emailTemplate), "")
 		if errEmail != nil {
-			log.Printf("failed to send verification email: %v", errEmail)
+			log.Printf("failed to send notification email: %v", errEmail)
 		}
 	}()
 }
@@ -73,7 +73,7 @@ func SendEmailNotificationLoginAccount(emailAddress string) {
 
 		_, errEmail := EmailNotificationAccount([]string{emailAddress}, string(emailTemplate), "")
 		if errEmail != nil {
-			log.Printf("failed to send verification email: %v", errEmail)
+			log.Printf("failed to send notification email: %v", errEmail)
 		}
 	}()
 }

@@ -128,7 +128,7 @@ func (ch *commentHandler) GetAllComments(c *gin.Context) {
 func (ch *commentHandler) GetCommentByID(c *gin.Context) {
 	commentID := c.Param("comment_id")
 
-	userID, role, errExtract := middlewares.ExtractToken(c)
+	_, role, errExtract := middlewares.ExtractToken(c)
 	if errExtract != nil {
 		c.JSON(http.StatusUnauthorized, responses.ErrorResponse(errExtract.Error()))
 		return
@@ -142,11 +142,6 @@ func (ch *commentHandler) GetCommentByID(c *gin.Context) {
 	comment, errGetID := ch.commentService.GetCommentByID(commentID)
 	if errGetID != nil {
 		c.JSON(http.StatusBadRequest, responses.ErrorResponse(errGetID.Error()))
-		return
-	}
-
-	if userID != comment.UserID {
-		c.JSON(http.StatusUnauthorized, responses.ErrorResponse("not authorizeds to access this resource"))
 		return
 	}
 

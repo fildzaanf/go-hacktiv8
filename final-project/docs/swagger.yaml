@@ -35,6 +35,15 @@ definitions:
         example: title photo
         type: string
     type: object
+  request.PhotoUpdateRequest:
+    properties:
+      caption:
+        example: this is example caption photo
+        type: string
+      title:
+        example: title photo
+        type: string
+    type: object
   request.UserLoginRequest:
     properties:
       email:
@@ -77,13 +86,16 @@ definitions:
         example: 20
         type: integer
       confirm_password:
-        example: password123456789
+        example: password12345678910
         type: string
       email:
         example: hanisahfildza@gmail.com
         type: string
       fullname:
         example: hanisah fildza annafisah
+        type: string
+      new_password:
+        example: password12345678910
         type: string
       password:
         example: password123456789
@@ -742,9 +754,9 @@ paths:
       - application/json
       responses:
         "200":
-          description: OTP verification successfully
+          description: OK
           schema:
-            type: string
+            $ref: '#/definitions/response.UserResponse'
         "400":
           description: Bad Request
           schema:
@@ -888,7 +900,7 @@ paths:
         name: photoRequest
         required: true
         schema:
-          $ref: '#/definitions/request.PhotoRequest'
+          $ref: '#/definitions/request.PhotoUpdateRequest'
       produces:
       - application/json
       responses:
