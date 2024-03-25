@@ -44,11 +44,41 @@ definitions:
         example: password123456789
         type: string
     type: object
+  request.UserNewPasswordRequest:
+    properties:
+      confirm_password:
+        example: password123456789
+        type: string
+      password:
+        example: password123456789
+        type: string
+    type: object
   request.UserRegisterRequest:
+    properties:
+      confirm_password:
+        example: password123456789
+        type: string
+      email:
+        example: hanisahfildza@gmail.com
+        type: string
+      password:
+        example: password123456789
+        type: string
+    type: object
+  request.UserSendOTPRequest:
+    properties:
+      email:
+        example: hanisahfildza@gmail.com
+        type: string
+    type: object
+  request.UserUpdateProfileRequest:
     properties:
       age:
         example: 20
         type: integer
+      confirm_password:
+        example: password123456789
+        type: string
       email:
         example: hanisahfildza@gmail.com
         type: string
@@ -62,22 +92,13 @@ definitions:
         example: fildzaanf
         type: string
     type: object
-  request.UserRequest:
+  request.UserVerifyOTPRequest:
     properties:
-      age:
-        example: 20
-        type: integer
       email:
         example: hanisahfildza@gmail.com
         type: string
-      fullname:
-        example: hanisah fildza annafisah
-        type: string
-      password:
-        example: password123456789
-        type: string
-      username:
-        example: fildzaanf
+      otp:
+        example: "7777"
         type: string
     type: object
   response.CommentResponse:
@@ -272,7 +293,7 @@ paths:
       parameters:
       - description: User login credentials
         in: body
-        name: userLoginRequest
+        name: userRequest
         required: true
         schema:
           $ref: '#/definitions/request.UserLoginRequest'
@@ -298,7 +319,7 @@ paths:
       parameters:
       - description: User data for registration
         in: body
-        name: userRegisterRequest
+        name: userRequest
         required: true
         schema:
           $ref: '#/definitions/request.UserRegisterRequest'
@@ -460,7 +481,7 @@ paths:
         name: Authorization
         required: true
         type: string
-      - description: Photoc ID
+      - description: Photo ID
         in: path
         name: photo_id
         required: true
@@ -644,6 +665,93 @@ paths:
       summary: Update media social entry by ID
       tags:
       - media-social
+  /password/change-password:
+    post:
+      consumes:
+      - application/json
+      description: Set new password after verifying OTP
+      parameters:
+      - description: JWT access token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: New password details
+        in: body
+        name: userRequest
+        required: true
+        schema:
+          $ref: '#/definitions/request.UserNewPasswordRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responses.TSuccessResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/responses.TErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/responses.TErrorResponse'
+      summary: Set new password
+      tags:
+      - passwords
+  /password/forgot-password:
+    post:
+      consumes:
+      - application/json
+      description: Initiate password reset process by sending OTP to user's email
+      parameters:
+      - description: User email for sending OTP
+        in: body
+        name: userRequest
+        required: true
+        schema:
+          $ref: '#/definitions/request.UserSendOTPRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responses.TSuccessResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/responses.TErrorResponse'
+      summary: Forgot password
+      tags:
+      - passwords
+  /password/verify-otp:
+    post:
+      consumes:
+      - application/json
+      description: Verify OTP sent to user's email for password reset
+      parameters:
+      - description: User email and OTP for verification
+        in: body
+        name: userRequest
+        required: true
+        schema:
+          $ref: '#/definitions/request.UserVerifyOTPRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OTP verification successfully
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/responses.TErrorResponse'
+      summary: Verify OTP
+      tags:
+      - passwords
   /photos:
     get:
       description: Retrieve all photos
@@ -901,7 +1009,7 @@ paths:
         name: userRequest
         required: true
         schema:
-          $ref: '#/definitions/request.UserRequest'
+          $ref: '#/definitions/request.UserUpdateProfileRequest'
       produces:
       - application/json
       responses:

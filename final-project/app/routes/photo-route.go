@@ -15,7 +15,7 @@ func PhotoRoutes(r *gin.RouterGroup, db *gorm.DB) {
 	photoService := service.NewPhotoService(photoRepository)
 	photoHandler := handler.NewPhotoHandler(photoService)
 
-	photo := r.Group("/photos", middlewares.JWTMiddleware())
+	photo := r.Group("/photos", middlewares.JWTMiddleware(false))
 	{
 		photo.POST("", photoHandler.CreatePhoto)
 		photo.GET("", photoHandler.GetAllPhotos)

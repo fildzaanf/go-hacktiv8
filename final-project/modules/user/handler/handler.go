@@ -5,9 +5,10 @@ import (
 	"final-project/modules/user/dto/request"
 	"final-project/modules/user/dto/response"
 	"final-project/modules/user/entity"
-	"final-project/utils/responses"
 	"final-project/utils/constant"
+	"final-project/utils/responses"
 	"net/http"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 )
@@ -28,29 +29,29 @@ func NewUserHandler(us entity.UserServiceInterface) *userHandler {
 // @Tags accounts
 // @Accept json
 // @Produce json
-// @Param userRegisterRequest body request.UserRegisterRequest true "User data for registration"
+// @Param userRequest body request.UserRegisterRequest true "User data for registration"
 // @Success 201 {object} response.UserRegisterResponse
 // @Failure 400 {object} responses.TErrorResponse
 // @Router /accounts/register [post]
 func (uh *userHandler) Register(c *gin.Context) {
-	registerRequest := request.UserRegisterRequest{}
+	userRequest := request.UserRegisterRequest{}
 
-	errBind := c.ShouldBind(&registerRequest)
+	errBind := c.ShouldBind(&userRequest)
 	if errBind != nil {
 		c.JSON(http.StatusBadRequest, responses.ErrorResponse(errBind.Error()))
 		return
 	}
 
-	request := request.UserRegisterRequestToUserCore(registerRequest)
+	userCore := request.UserRegisterRequestToUserCore(userRequest)
 
-	user, errCreate := uh.userService.Register(request)
+	user, errCreate := uh.userService.Register(userCore)
 	if errCreate != nil {
 		c.JSON(http.StatusBadRequest, responses.ErrorResponse(errCreate.Error()))
 		return
 	}
 
-	response := response.UserCoreToUserRegisterResponse(user)
-	c.JSON(http.StatusCreated, responses.SuccessResponse("register successfully", response))
+	userResponse := response.UserCoreToUserRegisterResponse(user)
+	c.JSON(http.StatusCreated, responses.SuccessResponse("register successfully", userResponse))
 }
 
 // Login godoc
@@ -59,27 +60,27 @@ func (uh *userHandler) Register(c *gin.Context) {
 // @Tags accounts
 // @Accept json
 // @Produce json
-// @Param userLoginRequest body request.UserLoginRequest true "User login credentials"
+// @Param userRequest body request.UserLoginRequest true "User login credentials"
 // @Success 200 {object} response.UserLoginResponse
 // @Failure 400 {object} responses.TErrorResponse
 // @Router /accounts/login [post]
 func (uh *userHandler) Login(c *gin.Context) {
-	loginRequest := request.UserLoginRequest{}
+	userRequest := request.UserLoginRequest{}
 
-	errBind := c.ShouldBind(&loginRequest)
+	errBind := c.ShouldBind(&userRequest)
 	if errBind != nil {
 		c.JSON(http.StatusBadRequest, responses.ErrorResponse(errBind.Error()))
 		return
 	}
 
-	user, token, errLogin := uh.userService.Login(loginRequest.Email, loginRequest.Password)
+	user, token, errLogin := uh.userService.Login(userRequest.Email, userRequest.Password)
 	if errLogin != nil {
 		c.JSON(http.StatusBadRequest, responses.ErrorResponse(errLogin.Error()))
 		return
 	}
 
-	response := response.UserCoreToUserLoginResponse(user, token)
-	c.JSON(http.StatusOK, responses.SuccessResponse("login successfully", response))
+	userResponse := response.UserCoreToUserLoginResponse(user, token)
+	c.JSON(http.StatusOK, responses.SuccessResponse("login successfully", userResponse))
 }
 
 // GetAllUsers godoc
@@ -93,7 +94,7 @@ func (uh *userHandler) Login(c *gin.Context) {
 // @Router /users [get]
 func (uh *userHandler) GetAllUsers(c *gin.Context) {
 
-	_, role, errExtract := middlewares.VerifyToken(c)
+	_, role, errExtract := middlewares.ExtractToken(c)
 	if errExtract != nil {
 		c.JSON(http.StatusUnauthorized, responses.ErrorResponse(errExtract.Error()))
 		return
@@ -114,9 +115,9 @@ func (uh *userHandler) GetAllUsers(c *gin.Context) {
 		return
 	}
 
-	response := response.ListUserCoreToUserResponse(users)
+	userResponse := response.ListUserCoreToUserResponse(users)
 
-	c.JSON(http.StatusOK, responses.SuccessResponse("data retrieved successfully", response))
+	c.JSON(http.StatusOK, responses.SuccessResponse("data retrieved successfully", userResponse))
 }
 
 // GetUserByID godoc
@@ -131,9 +132,9 @@ func (uh *userHandler) GetAllUsers(c *gin.Context) {
 // @Failure 401 {object} responses.TErrorResponse
 // @Router /users/{user_id} [get]
 func (uh *userHandler) GetUserByID(c *gin.Context) {
-	pathUserID := c.Param("user_id")
+	userID := c.Param("user_id")
 
-	tokenUserID, role, errExtract := middlewares.VerifyToken(c)
+	_, role, errExtract := middlewares.ExtractToken(c)
 	if errExtract != nil {
 		c.JSON(http.StatusUnauthorized, responses.ErrorResponse(errExtract.Error()))
 		return
@@ -143,19 +144,19 @@ func (uh *userHandler) GetUserByID(c *gin.Context) {
 		return
 	}
 
-	if tokenUserID != pathUserID {
-		c.JSON(http.StatusUnauthorized, responses.ErrorResponse("not authorizeds to access this resource"))
-		return
-	}
+	// if tokenUserID != pathUserID {
+	// 	c.JSON(http.StatusUnauthorized, responses.ErrorResponse("not authorizeds to access this resource"))
+	// 	return
+	// }
 
-	user, errGetID := uh.userService.GetUserByID(pathUserID)
+	user, errGetID := uh.userService.GetUserByID(userID)
 	if errGetID != nil {
 		c.JSON(http.StatusBadRequest, responses.ErrorResponse(errGetID.Error()))
 		return
 	}
 
-	response := response.UserCoreToUserResponse(user)
-	c.JSON(http.StatusOK, responses.SuccessResponse("data retrieved successfully", response))
+	userResponse := response.UserCoreToUserResponse(user)
+	c.JSON(http.StatusOK, responses.SuccessResponse("data retrieved successfully", userResponse))
 }
 
 // UpdateUserByID godoc
@@ -166,7 +167,7 @@ func (uh *userHandler) GetUserByID(c *gin.Context) {
 // @Produce json
 // @Param Authorization header string true "JWT access token"
 // @Param user_id path string true "User ID"
-// @Param userRequest body request.UserRequest true "User details"
+// @Param userRequest body request.UserUpdateProfileRequest true "User details"
 // @Success 200 {object} response.UserResponse
 // @Failure 400 {object} responses.TErrorResponse
 // @Failure 401 {object} responses.TErrorResponse
@@ -174,7 +175,7 @@ func (uh *userHandler) GetUserByID(c *gin.Context) {
 func (uh *userHandler) UpdateUserByID(c *gin.Context) {
 	pathUserID := c.Param("user_id")
 
-	tokenUserID, role, errExtract := middlewares.VerifyToken(c)
+	tokenUserID, role, errExtract := middlewares.ExtractToken(c)
 	if errExtract != nil {
 		c.JSON(http.StatusUnauthorized, responses.ErrorResponse(errExtract.Error()))
 		return
@@ -189,7 +190,7 @@ func (uh *userHandler) UpdateUserByID(c *gin.Context) {
 		return
 	}
 
-	userRequest := request.UserRequest{}
+	userRequest := request.UserUpdateProfileRequest{}
 
 	errBind := c.ShouldBind(&userRequest)
 	if errBind != nil {
@@ -197,16 +198,16 @@ func (uh *userHandler) UpdateUserByID(c *gin.Context) {
 		return
 	}
 
-	request := request.UserRequestToUserCore(userRequest)
+	userCore := request.UserUpdateProfileRequestToUserCore(userRequest)
 
-	user, errUpdate := uh.userService.UpdateUserByID(pathUserID, request)
+	user, errUpdate := uh.userService.UpdateUserByID(pathUserID, userCore)
 	if errUpdate != nil {
 		c.JSON(http.StatusBadRequest, responses.ErrorResponse(errUpdate.Error()))
 		return
 	}
 
-	response := response.UserCoreToUserResponse(user)
-	c.JSON(http.StatusOK, responses.SuccessResponse("data updated successfully", response))
+	userResponse := response.UserCoreToUserResponse(user)
+	c.JSON(http.StatusOK, responses.SuccessResponse("data updated successfully", userResponse))
 }
 
 // DeleteUserByID godoc
@@ -222,7 +223,7 @@ func (uh *userHandler) UpdateUserByID(c *gin.Context) {
 func (uh *userHandler) DeleteUserByID(c *gin.Context) {
 	pathUserID := c.Param("user_id")
 
-	tokenUserID, role, errExtract := middlewares.VerifyToken(c)
+	tokenUserID, role, errExtract := middlewares.ExtractToken(c)
 	if errExtract != nil {
 		c.JSON(http.StatusUnauthorized, responses.ErrorResponse(errExtract.Error()))
 		return
@@ -242,4 +243,108 @@ func (uh *userHandler) DeleteUserByID(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusOK, responses.SuccessResponse("data deleted successfully", nil))
+}
+
+// ForgotPassword godoc
+// @Summary Forgot password
+// @Description Initiate password reset process by sending OTP to user's email
+// @Tags passwords
+// @Accept json
+// @Produce json
+// @Param userRequest body request.UserSendOTPRequest true "User email for sending OTP"
+// @Success 200 {object} responses.TSuccessResponse
+// @Failure 400 {object} responses.TErrorResponse
+// @Router /password/forgot-password [post]
+func (uh *userHandler) ForgotPassword(c *gin.Context) {
+	userRequest := request.UserSendOTPRequest{}
+
+	errBind := c.Bind(&userRequest)
+	if errBind != nil {
+		c.JSON(http.StatusBadRequest, responses.ErrorResponse(errBind.Error()))
+		return
+	}
+
+	userCore := request.UserSendOTPRequestToUserCore(userRequest)
+
+	errSendOTP := uh.userService.SendOTP(userCore.Email)
+	if errSendOTP != nil {
+		if strings.Contains(errSendOTP.Error(), "email not found") {
+			c.JSON(http.StatusNotFound, responses.ErrorResponse(errSendOTP.Error()))
+			return
+		}
+		c.JSON(http.StatusBadRequest, responses.ErrorResponse(errSendOTP.Error()))
+		return
+	}
+
+	c.JSON(http.StatusOK, responses.SuccessResponse("otp sent successfully", nil))
+}
+
+// VerifyOTP godoc
+// @Summary Verify OTP
+// @Description Verify OTP sent to user's email for password reset
+// @Tags passwords
+// @Accept json
+// @Produce json
+// @Param userRequest body request.UserVerifyOTPRequest true "User email and OTP for verification"
+// @Success 200 {string} string "OTP verification successfully"
+// @Failure 400 {object} responses.TErrorResponse
+// @Router /password/verify-otp [post]
+func (uh *userHandler) VerifyOTP(c *gin.Context) {
+	userRequest := request.UserVerifyOTPRequest{}
+
+	errBind := c.Bind(&userRequest)
+	if errBind != nil {
+		c.JSON(http.StatusBadRequest, responses.ErrorResponse(errBind.Error()))
+		return
+	}
+
+	userCore := request.UserVerifyOTPRequestToUserCore(userRequest)
+
+	token, errVerify := uh.userService.VerifyOTP(userCore.Email, userCore.OTP)
+	if errVerify != nil {
+		c.JSON(http.StatusInternalServerError, responses.ErrorResponse("otp verification failed "+errVerify.Error()))
+		return
+	}
+
+	userResponse :=  response.UserCoreToUserVerifyOTPResponse(token)
+
+	c.JSON(http.StatusOK, responses.SuccessResponse("otp verification successfully", userResponse))
+}
+
+// NewPassword godoc
+// @Summary Set new password
+// @Description Set new password after verifying OTP
+// @Tags passwords
+// @Accept json
+// @Produce json
+// @Param Authorization header string true "JWT access token"
+// @Param userRequest body request.UserNewPasswordRequest true "New password details"
+// @Success 200 {object} responses.TSuccessResponse
+// @Failure 400 {object} responses.TErrorResponse
+// @Failure 401 {object} responses.TErrorResponse
+// @Router /password/change-password [post]
+func (uh *userHandler) NewPassword(c *gin.Context) {
+	userRequest := request.UserNewPasswordRequest{}
+
+	errBind := c.Bind(&userRequest)
+	if errBind != nil {
+		c.JSON(http.StatusBadRequest, responses.ErrorResponse(errBind.Error()))
+		return
+	}
+
+	email, errExtract := middlewares.ExtractVerifyToken(c)
+	if errExtract != nil {
+		c.JSON(http.StatusUnauthorized, responses.ErrorResponse(errExtract.Error()))
+		return
+	}
+
+	userCore := request.UserNewPasswordRequestToUserCore(userRequest)
+
+	errUpdate := uh.userService.NewPassword(email, userCore)
+	if errUpdate != nil {
+		c.JSON(http.StatusBadRequest, responses.ErrorResponse(errUpdate.Error()))
+		return
+	}
+
+	c.JSON(http.StatusOK, responses.SuccessResponse("password updated successfully", nil))
 }

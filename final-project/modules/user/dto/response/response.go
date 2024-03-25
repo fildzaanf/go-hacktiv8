@@ -32,12 +32,12 @@ type UserLoginResponse struct {
 	Email        string                   `json:"email"`
 	Role         string                   `json:"role"`
 	Token        string                   `json:"token"`
-	Photos       []rp.PhotoResponse       `json:"photos"`
-	Comments     []rc.CommentResponse     `json:"comments"`
-	MediaSocials []rm.MediaSocialResponse `json:"media_socials"`
 	CreatedAt    time.Time                `json:"created_at"`
 	UpdatedAt    time.Time                `json:"updated_at"`
 	DeletedAt    gorm.DeletedAt           `json:"deleted_at"`
+	Photos       []rp.PhotoResponse       `json:"photos"`
+	Comments     []rc.CommentResponse     `json:"comments"`
+	MediaSocials []rm.MediaSocialResponse `json:"media_socials"`
 }
 
 type UserResponse struct {
@@ -47,10 +47,14 @@ type UserResponse struct {
 	Age          int                      `json:"age"`
 	Email        string                   `json:"email"`
 	Role         string                   `json:"role"`
-	Photos       []rp.PhotoResponse       `json:"photos"`
-	Comments     []rc.CommentResponse     `json:"comments"`
-	MediaSocials []rm.MediaSocialResponse `json:"media_socials"`
 	CreatedAt    time.Time                `json:"created_at"`
 	UpdatedAt    time.Time                `json:"updated_at"`
 	DeletedAt    gorm.DeletedAt           `json:"deleted_at"`
+	Photos       []rp.PhotoResponse       `json:"photos"`
+	Comments     []rc.CommentResponse     `json:"comments"`
+	MediaSocials []rm.MediaSocialResponse `json:"media_socials"`
+}
+
+type UserVerifyOTPResponse struct {
+	Token string `json:"token"`
 }

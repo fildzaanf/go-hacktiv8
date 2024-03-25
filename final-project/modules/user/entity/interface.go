@@ -11,6 +11,10 @@ type UserRepositoryInterface interface {
 	GetUserByUsername(username string) (User, error)
 	UpdateUserByID(userID string, userCore User) (User, error)
 	DeleteUserByID(userID string) error
+	NewPassword(email string, userCore User) (User, error)
+	SendOTP(email string, otp string, expired int64) (User, error)
+	VerifyOTP(email, otp string) (User, error)
+	ResetOTP(otp string) (User, error)
 }
 
 type UserServiceInterface interface {
@@ -22,6 +26,9 @@ type UserServiceInterface interface {
 	GetUserByUsername(username string) (User, error)
 	UpdateUserByID(userID string, userCore User) (User, error)
 	DeleteUserByID(userID string) error
+	NewPassword(email string, userCore User) error
+	SendOTP(email string) error
+	VerifyOTP(email, otp string) (string, error)
 }
 
 type UserHandlerInterface interface {
@@ -31,4 +38,7 @@ type UserHandlerInterface interface {
 	GetUserByID(c gin.Context)
 	UpdateUserByID(c gin.Context)
 	DeletedUserByID(c gin.Context)
+	ForgotPassword(c gin.Context)
+	NewPassword(c gin.Context)
+	VerifyOTP(c gin.Context)
 }

@@ -17,11 +17,19 @@ func UserRoutes(r *gin.RouterGroup, db *gorm.DB) {
 
 	account := r.Group("/accounts")
 	{
-		account.POST("register", userHandler.Register)
-		account.POST("login", userHandler.Login)
+		account.POST("/register", userHandler.Register)
+		account.POST("/login", userHandler.Login)
+		
 	}
 
-	user := r.Group("/users", middlewares.JWTMiddleware())
+	password := r.Group("/password")
+	{
+		password.POST("/forgot-password", userHandler.ForgotPassword)
+		password.POST("/verify-otp", userHandler.VerifyOTP)
+		password.PATCH("/change-password", userHandler.NewPassword, middlewares.JWTMiddleware(true))
+	}
+
+	user := r.Group("/users", middlewares.JWTMiddleware(false))
 	{
 		user.GET("", userHandler.GetAllUsers)
 		user.GET("/:user_id", userHandler.GetUserByID)

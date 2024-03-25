@@ -18,12 +18,13 @@ func NewPhotoService(photoRepository entity.PhotoRepositoryInterface) entity.Pho
 
 func (ps *photoService) CreatePhoto(photoCore entity.Photo) (entity.Photo, error) {
 
-	errEmpty := validator.IsDataEmpty(photoCore.PhotoURL, photoCore.Title, photoCore.Caption)
+	errEmpty := validator.IsDataEmpty([]string{"photo_url", "title", "caption"}, photoCore.PhotoURL, photoCore.Title, photoCore.Caption)
 	if errEmpty != nil {
 		return entity.Photo{}, errEmpty
 	}
+	
 
-	errLength := validator.IsMaxLengthValid(photoCore.Caption, 100)
+	errLength := validator.IsMaxLengthValid(100, map[string]string{"caption": photoCore.Caption})
 	if errLength != nil {
 		return entity.Photo{}, errLength
 	}

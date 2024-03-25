@@ -8,9 +8,9 @@ import (
 )
 
 type Configuration struct {
-	POSTGRESQL PostgreSQLConfig
-	SERVER     ServerConfig
-	JWT          JWTConfig
+	POSTGRESQL   PostgreSQLConfig
+	SMTP         SMTPConfig
+	SERVER       ServerConfig
 }
 
 type PostgreSQLConfig struct {
@@ -21,14 +21,19 @@ type PostgreSQLConfig struct {
 	POSTGRESQL_NAME string
 }
 
+
+type SMTPConfig struct {
+	SMTP_USER string
+	SMTP_PASS string
+	SMTP_PORT string
+	SMTP_HOST string
+}
+
 type ServerConfig struct {
 	SERVER_HOST string
 	SERVER_PORT string
 }
 
-type JWTConfig struct {
-	JWT_SECRET string
-}
 
 func LoadConfig() (*Configuration, error) {
 
@@ -50,12 +55,15 @@ func LoadConfig() (*Configuration, error) {
 			POSTGRESQL_PORT: os.Getenv("POSTGRESQL_PORT"),
 			POSTGRESQL_NAME: os.Getenv("POSTGRESQL_NAME"),
 		},
+		SMTP: SMTPConfig{
+			SMTP_USER: os.Getenv("SMTP_USER"),
+			SMTP_PASS: os.Getenv("SMTP_PASS"),
+			SMTP_PORT: os.Getenv("SMTP_PORT"),
+			SMTP_HOST: os.Getenv("SMTP_HOST"),
+		},
 		SERVER: ServerConfig{
 			SERVER_HOST: os.Getenv("SERVER_HOST"),
 			SERVER_PORT: os.Getenv("SERVER_PORT"),
-		},
-		JWT: JWTConfig{
-			JWT_SECRET: os.Getenv("JWT_SECRET"),
 		},
 	}, nil
 }

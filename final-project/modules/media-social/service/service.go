@@ -18,12 +18,12 @@ func NewMediaSocialService(mediaSocialRepository entity.MediaSocialRepositoryInt
 
 func (ms *mediaSocialService) CreateMediaSocial(mediaSocialCore entity.MediaSocial) (entity.MediaSocial, error) {
 
-	errEmpty := validator.IsDataEmpty(mediaSocialCore.Name, mediaSocialCore.MediaSocialURL)
+	errEmpty := validator.IsDataEmpty([]string{"name", "media_social_url"}, mediaSocialCore.Name, mediaSocialCore.MediaSocialURL)
 	if errEmpty != nil {
 		return entity.MediaSocial{}, errEmpty
 	}
-
-	errLength := validator.IsMaxLengthValid(mediaSocialCore.Name, 30)
+	
+	errLength := validator.IsMaxLengthValid(30, map[string]string{"name": mediaSocialCore.Name})
 	if errLength != nil {
 		return entity.MediaSocial{}, errLength
 	}

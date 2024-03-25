@@ -5,7 +5,11 @@ import (
 	"final-project/middlewares"
 	"final-project/modules/user/entity"
 	"final-project/utils/helper/bcrypt"
+	"final-project/utils/helper/email/mailer/notification"
+	"final-project/utils/helper/email/mailer/onetimepassword"
+	"final-project/utils/helper/generator"
 	"final-project/utils/validator"
+	"time"
 )
 
 type userService struct {
@@ -20,7 +24,7 @@ func NewUserService(userRepository entity.UserRepositoryInterface) entity.UserSe
 
 func (us *userService) Register(userCore entity.User) (entity.User, error) {
 
-	errEmpty := validator.IsDataEmpty(userCore.Fullname, userCore.Username, userCore.Age, userCore.Email, userCore.Password)
+	errEmpty := validator.IsDataEmpty([]string{"email", "password", "confirm_password"}, userCore.Email, userCore.Password, userCore.ConfirmPassword)
 	if errEmpty != nil {
 		return entity.User{}, errEmpty
 	}
@@ -30,19 +34,18 @@ func (us *userService) Register(userCore entity.User) (entity.User, error) {
 		return entity.User{}, errEmailValid
 	}
 
-	errLength := validator.IsMinLengthValid(userCore.Password, 10)
+	errLength := validator.IsMinLengthValid(10, map[string]string{"password": userCore.Password})
 	if errLength != nil {
 		return entity.User{}, errLength
-	}
-
-	_, errGetUname := us.userRepository.GetUserByUsername(userCore.Username)
-	if errGetUname == nil {
-		return entity.User{}, errors.New("username already exists")
 	}
 
 	_, errGetEmail := us.userRepository.GetUserByEmail(userCore.Email)
 	if errGetEmail == nil {
 		return entity.User{}, errors.New("email already exists")
+	}
+
+	if userCore.Password != userCore.ConfirmPassword {
+		return entity.User{}, errors.New("password and confirm password does not match")
 	}
 
 	hashedPassword, errHash := bcrypt.HashPassword(userCore.Password)
@@ -57,12 +60,14 @@ func (us *userService) Register(userCore entity.User) (entity.User, error) {
 		return entity.User{}, errRegister
 	}
 
+	notification.SendEmailNotificationRegisterAccount(userData.Email)
+
 	return userData, nil
 }
 
 func (us *userService) Login(email, password string) (entity.User, string, error) {
 
-	errEmpty := validator.IsDataEmpty(email, password)
+	errEmpty := validator.IsDataEmpty([]string{"email", "password"}, email, password)
 	if errEmpty != nil {
 		return entity.User{}, "", errEmpty
 	}
@@ -82,10 +87,13 @@ func (us *userService) Login(email, password string) (entity.User, string, error
 		return entity.User{}, "", errors.New("incorrect email or password")
 	}
 
-	token, errCreateToken := middlewares.GenerateToken(userData.ID, userData.Role)
-	if errCreateToken != nil {
+	token, errGenerate := middlewares.GenerateToken(userData.ID, userData.Role)
+	if errGenerate != nil {
 		return entity.User{}, "", errors.New("generate token failed")
 	}
+
+	notification.SendEmailNotificationLoginAccount(email)
+
 	return userData, token, nil
 }
 
@@ -139,7 +147,7 @@ func (us *userService) UpdateUserByID(userID string, userCore entity.User) (enti
 		return entity.User{}, errors.New("invalid id")
 	}
 
-	_, errGetID := us.userRepository.GetUserByID(userID)
+	userData, errGetID := us.userRepository.GetUserByID(userID)
 	if errGetID != nil {
 		return entity.User{}, errors.New("user not found")
 	}
@@ -158,17 +166,35 @@ func (us *userService) UpdateUserByID(userID string, userCore entity.User) (enti
 	}
 
 	if userCore.Password != "" {
-		
-		errLength := validator.IsMinLengthValid(userCore.Password, 10)
+
+		errEmpty := validator.IsDataEmpty([]string{"password", "new_password", "confirm_password"}, userCore.Password, userCore.NewPassword, userCore.ConfirmPassword)
+		if errEmpty != nil {
+			return entity.User{}, errEmpty
+		}
+
+		comparePassword := bcrypt.ComparePassword(userData.Password, userCore.Password)
+		if comparePassword != nil {
+			return entity.User{}, errors.New("incorrect password")
+		}
+
+		// if userCore.Password != userModel.Password {
+		// 	return entity.User{}, errors.New("password incorrect")
+		// }
+
+		if userCore.NewPassword != userCore.ConfirmPassword {
+			return entity.User{}, errors.New("new password and confirm password does not match")
+		}
+
+		errLength := validator.IsMinLengthValid(10, map[string]string{"password": userCore.Password, "new_password": userCore.NewPassword, "confirm_password": userCore.ConfirmPassword})
 		if errLength != nil {
 			return entity.User{}, errLength
 		}
 
-		hashedPassword, errHash := bcrypt.HashPassword(userCore.Password)
+		hashedNewPassword, errHash := bcrypt.HashPassword(userCore.NewPassword)
 		if errHash != nil {
 			return entity.User{}, errors.New("error hashing password")
 		}
-		userCore.Password = hashedPassword
+		userCore.Password = hashedNewPassword
 
 	}
 
@@ -195,6 +221,102 @@ func (us *userService) DeleteUserByID(userID string) error {
 	errDeleteUserByID := us.userRepository.DeleteUserByID(userID)
 	if errDeleteUserByID != nil {
 		return errDeleteUserByID
+	}
+
+	return nil
+}
+
+func (us *userService) SendOTP(email string) error {
+
+	errEmpty := validator.IsDataEmpty([]string{"email"}, email)
+	if errEmpty != nil {
+		return errEmpty
+	}
+
+	errEmailValid := validator.IsEmailValid(email)
+	if errEmailValid != nil {
+		return errEmailValid
+	}
+
+	otp, errGenerateOTP := generator.GenerateRandomCode()
+	if errGenerateOTP != nil {
+		return errors.New("failed to generate otp")
+	}
+
+	expired := time.Now().Add(7 * time.Minute).Unix()
+
+	_, errSend := us.userRepository.SendOTP(email, otp, expired)
+	if errSend != nil {
+		return errSend
+	}
+
+	onetimepassword.SendEmailOTP(email, otp)
+	return nil
+}
+
+func (us *userService) VerifyOTP(email, otp string) (string, error) {
+
+	errEmpty := validator.IsDataEmpty([]string{"email", "otp"}, email, otp)
+	if errEmpty != nil {
+		return "", errEmpty
+	}
+
+	userData, err := us.userRepository.VerifyOTP(email, otp)
+	if err != nil {
+		return "", errors.New("email or otp not found")
+	}
+
+	if userData.OTPExpiration <= time.Now().Unix() {
+		return "", errors.New("otp has expired")
+	}
+
+	if userData.OTP != otp {
+		return "", errors.New("invalid otp")
+	}
+
+	token, err := middlewares.GenerateVerifyToken(email)
+	if err != nil {
+		return "", errors.New("generate token failed")
+	}
+
+	_, errReset := us.userRepository.ResetOTP(otp)
+	if errReset != nil {
+		return "", errors.New("failed to reset otp")
+	}
+
+	return token, nil
+}
+
+func (us *userService) NewPassword(email string, userCore entity.User) error {
+
+	errEmpty := validator.IsDataEmpty([]string{"email", "password", "confirm_password"}, email, userCore.Password, userCore.ConfirmPassword)
+	if errEmpty != nil {
+		return errEmpty
+	}
+
+	errEmailValid := validator.IsEmailValid(email)
+	if errEmailValid != nil {
+		return errEmailValid
+	}
+
+	errLength := validator.IsMinLengthValid(10, map[string]string{"password": userCore.Password})
+	if errLength != nil {
+		return  errLength
+	}
+
+	if userCore.Password != userCore.ConfirmPassword {
+		return errors.New("password and confirm password does not match")
+	}
+
+	HashPassword, errHash := bcrypt.HashPassword(userCore.Password)
+	if errHash != nil {
+		return errors.New("error hashing password")
+	}
+	userCore.Password = HashPassword
+
+	_, errNewPass := us.userRepository.NewPassword(email, userCore)
+	if errNewPass != nil {
+		return errNewPass
 	}
 
 	return nil

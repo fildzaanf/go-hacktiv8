@@ -150,3 +150,95 @@ func (ur *userRepository) DeleteUserByID(userID string) error {
 	}
 	return nil
 }
+
+
+func (ur *userRepository) SendOTP(email string, otp string, expired int64) (userCore entity.User, err error) {
+	userModel := model.User{}
+
+	tx := ur.db.Where("email = ?", email).First(&userModel)
+	if tx.Error != nil {
+		if tx.RowsAffected == 0 {
+			return entity.User{}, errors.New("email not found")
+		}
+		return entity.User{}, tx.Error
+	}
+
+	userModel.OTP = otp
+	userModel.OTPExpiration = expired
+
+	errUpdate := ur.db.Save(&userModel).Error
+	if errUpdate != nil {
+		return entity.User{}, errUpdate
+	}
+
+	userCore = entity.UserModelToUserCore(userModel)
+
+	return userCore, nil
+}
+
+func (ur *userRepository) VerifyOTP(email, otp string) (entity.User, error) {
+	userModel := model.User{}
+
+	tx := ur.db.Where("otp = ? AND email = ?", otp, email).First(&userModel)
+	if tx.Error != nil {
+		return entity.User{}, tx.Error
+	}
+
+	if tx.RowsAffected == 0 {
+		return entity.User{}, errors.New("email or otp not found")
+	}
+
+	userCore := entity.UserModelToUserCore(userModel)
+	return userCore, nil
+}
+
+func (ur *userRepository) ResetOTP(otp string) (userCore entity.User, err error) {
+	userModel := model.User{}
+
+	tx := ur.db.Where("otp = ?", otp).First(&userModel)
+	if tx.Error != nil {
+		return entity.User{}, tx.Error
+	}
+
+	if tx.RowsAffected == 0 {
+		return entity.User{}, errors.New("otp not found")
+	}
+
+	userModel.OTP = ""
+	userModel.OTPExpiration = 0
+
+	errUpdate := ur.db.Save(&userModel).Error
+	if errUpdate != nil {
+		return entity.User{}, errUpdate
+	}
+
+	userCore = entity.UserModelToUserCore(userModel)
+	return userCore, nil
+}
+
+
+func (ur *userRepository) NewPassword(email string, userCore entity.User) (entity.User, error) {
+	userModel := model.User{}
+
+	tx := ur.db.Where("email = ?", email).First(&userModel)
+	if tx.Error != nil {
+		return entity.User{}, tx.Error
+	}
+
+	if tx.RowsAffected == 0 {
+		return entity.User{}, errors.New("email not found")
+	}
+
+	userModelUpdate := entity.UserCoreToUserModel(userCore)
+
+	errUpdate := ur.db.Model(&userModel).Updates(userModelUpdate)
+	if errUpdate != nil {
+		return entity.User{}, errUpdate.Error
+	}
+
+	userCore = entity.UserModelToUserCore(userModel)
+
+	return userCore, nil
+}
+
+

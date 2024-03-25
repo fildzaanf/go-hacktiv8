@@ -19,17 +19,30 @@ func init() {
 	}
 }
 
-func JWTMiddleware() gin.HandlerFunc {
+func JWTMiddleware(verifyToken bool) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		_, _, err := VerifyToken(c)
-		if err != nil {
-			c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
-			c.Abort()
-			return
+		if verifyToken {
+			email, err := ExtractVerifyToken(c)
+			if err != nil {
+				c.JSON(http.StatusUnauthorized, gin.H{"error": "invalid verification token"})
+				c.Abort()
+				return
+			}
+			c.Set("email", email)
+		} else {
+			id, role, err := ExtractToken(c)
+			if err != nil {
+				c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
+				c.Abort()
+				return
+			}
+			c.Set("id", id)
+			c.Set("role", role)
 		}
 		c.Next()
 	}
 }
+
 
 func GenerateToken(id string, role string) (string, error) {
 	logrus.Infof("generating token for user with ID: %s, Role: %s", id, role)
@@ -51,7 +64,7 @@ func GenerateToken(id string, role string) (string, error) {
 	return tokenString, nil
 }
 
-func VerifyToken(c *gin.Context) (string, string, error) {
+func ExtractToken(c *gin.Context) (string, string, error) {
 	tokenString := c.GetHeader("Authorization")
 	if tokenString == "" {
 		return "", "", errors.New("missing authorization token")
@@ -77,3 +90,45 @@ func VerifyToken(c *gin.Context) (string, string, error) {
 
 	return id, role, nil
 }
+
+func GenerateVerifyToken(email string) (string, error) {
+	godotenv.Load()
+	claims := jwt.MapClaims{}
+	claims["email"] = email
+	claims["exp"] = time.Now().Add(time.Minute * 15).Unix()
+
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	return token.SignedString([]byte(os.Getenv("JWT_SECRET")))
+}
+
+func ExtractVerifyToken(c *gin.Context) (string, error) {
+
+    tokenString := c.GetHeader("Authorization")
+    if tokenString == "" {
+        return "", errors.New("missing authorization token")
+    }
+
+    tokenString = tokenString[len("Bearer "):]
+    token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+        jwtSecret := []byte(os.Getenv("JWT_SECRET"))
+        return jwtSecret, nil
+    })
+
+    if err != nil || !token.Valid {
+        return "", errors.New("invalid authorization token")
+    }
+
+    claims, ok := token.Claims.(jwt.MapClaims)
+    if !ok {
+        return "", errors.New("invalid token claims")
+    }
+    email, ok := claims["email"].(string)
+    if !ok {
+        return "", errors.New("email claim not found in token")
+    }
+
+    return email, nil
+}
+
+
+

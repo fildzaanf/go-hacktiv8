@@ -29,7 +29,7 @@ func NewCommentHandler(commentService entity.CommentServiceInterface) *commentHa
 // @Accept json
 // @Produce json
 // @Param Authorization header string true "JWT access token"
-// @Param photo_id path string true "Photoc ID"
+// @Param photo_id path string true "Photo ID"
 // @Param commentRequest body request.CommentRequest true "Comment data"
 // @Success 201 {object} response.CommentResponse
 // @Success 201 {object} responses.TSuccessResponse
@@ -39,7 +39,7 @@ func NewCommentHandler(commentService entity.CommentServiceInterface) *commentHa
 func (ch *commentHandler) CreateComment(c *gin.Context) {
 	photoID := c.Param("photo_id")
 
-	userID, role, errExtract := middlewares.VerifyToken(c)
+	userID, role, errExtract := middlewares.ExtractToken(c)
 	if errExtract != nil {
 		c.JSON(http.StatusUnauthorized, responses.ErrorResponse(errExtract.Error()))
 		return
@@ -86,7 +86,7 @@ func (ch *commentHandler) CreateComment(c *gin.Context) {
 // @Router /comments [get]
 func (ch *commentHandler) GetAllComments(c *gin.Context) {
 
-	userID, role, errExtract := middlewares.VerifyToken(c)
+	userID, role, errExtract := middlewares.ExtractToken(c)
 	if errExtract != nil {
 		c.JSON(http.StatusUnauthorized, responses.ErrorResponse(errExtract.Error()))
 		return
@@ -128,7 +128,7 @@ func (ch *commentHandler) GetAllComments(c *gin.Context) {
 func (ch *commentHandler) GetCommentByID(c *gin.Context) {
 	commentID := c.Param("comment_id")
 
-	userID, role, errExtract := middlewares.VerifyToken(c)
+	userID, role, errExtract := middlewares.ExtractToken(c)
 	if errExtract != nil {
 		c.JSON(http.StatusUnauthorized, responses.ErrorResponse(errExtract.Error()))
 		return
@@ -172,7 +172,7 @@ func (ch *commentHandler) GetCommentByID(c *gin.Context) {
 func (ch *commentHandler) UpdateCommentByID(c *gin.Context) {
 	commentID := c.Param("comment_id")
 
-	userID, role, errExtract := middlewares.VerifyToken(c)
+	userID, role, errExtract := middlewares.ExtractToken(c)
 	if errExtract != nil {
 		c.JSON(http.StatusUnauthorized, responses.ErrorResponse(errExtract.Error()))
 		return
@@ -230,7 +230,7 @@ func (ch *commentHandler) UpdateCommentByID(c *gin.Context) {
 func (ch *commentHandler) DeleteCommentByID(c *gin.Context) {
 	commentID := c.Param("comment_id")
 
-	userID, role, errExtract := middlewares.VerifyToken(c)
+	userID, role, errExtract := middlewares.ExtractToken(c)
 	if errExtract != nil {
 		c.JSON(http.StatusUnauthorized, responses.ErrorResponse(errExtract.Error()))
 		return

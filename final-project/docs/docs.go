@@ -32,7 +32,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "description": "User login credentials",
-                        "name": "userLoginRequest",
+                        "name": "userRequest",
                         "in": "body",
                         "required": true,
                         "schema": {
@@ -72,7 +72,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "description": "User data for registration",
-                        "name": "userRegisterRequest",
+                        "name": "userRequest",
                         "in": "body",
                         "required": true,
                         "schema": {
@@ -318,7 +318,7 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
-                        "description": "Photoc ID",
+                        "description": "Photo ID",
                         "name": "photo_id",
                         "in": "path",
                         "required": true
@@ -580,6 +580,139 @@ const docTemplate = `{
                     },
                     "401": {
                         "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/responses.TErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/password/change-password": {
+            "post": {
+                "description": "Set new password after verifying OTP",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "passwords"
+                ],
+                "summary": "Set new password",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "JWT access token",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "New password details",
+                        "name": "userRequest",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request.UserNewPasswordRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/responses.TSuccessResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/responses.TErrorResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/responses.TErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/password/forgot-password": {
+            "post": {
+                "description": "Initiate password reset process by sending OTP to user's email",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "passwords"
+                ],
+                "summary": "Forgot password",
+                "parameters": [
+                    {
+                        "description": "User email for sending OTP",
+                        "name": "userRequest",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request.UserSendOTPRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/responses.TSuccessResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/responses.TErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/password/verify-otp": {
+            "post": {
+                "description": "Verify OTP sent to user's email for password reset",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "passwords"
+                ],
+                "summary": "Verify OTP",
+                "parameters": [
+                    {
+                        "description": "User email and OTP for verification",
+                        "name": "userRequest",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/request.UserVerifyOTPRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OTP verification successfully",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
                         "schema": {
                             "$ref": "#/definitions/responses.TErrorResponse"
                         }
@@ -934,7 +1067,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/request.UserRequest"
+                            "$ref": "#/definitions/request.UserUpdateProfileRequest"
                         }
                     }
                 ],
@@ -1066,12 +1199,55 @@ const docTemplate = `{
                 }
             }
         },
+        "request.UserNewPasswordRequest": {
+            "type": "object",
+            "properties": {
+                "confirm_password": {
+                    "type": "string",
+                    "example": "password123456789"
+                },
+                "password": {
+                    "type": "string",
+                    "example": "password123456789"
+                }
+            }
+        },
         "request.UserRegisterRequest": {
+            "type": "object",
+            "properties": {
+                "confirm_password": {
+                    "type": "string",
+                    "example": "password123456789"
+                },
+                "email": {
+                    "type": "string",
+                    "example": "hanisahfildza@gmail.com"
+                },
+                "password": {
+                    "type": "string",
+                    "example": "password123456789"
+                }
+            }
+        },
+        "request.UserSendOTPRequest": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string",
+                    "example": "hanisahfildza@gmail.com"
+                }
+            }
+        },
+        "request.UserUpdateProfileRequest": {
             "type": "object",
             "properties": {
                 "age": {
                     "type": "integer",
                     "example": 20
+                },
+                "confirm_password": {
+                    "type": "string",
+                    "example": "password123456789"
                 },
                 "email": {
                     "type": "string",
@@ -1091,28 +1267,16 @@ const docTemplate = `{
                 }
             }
         },
-        "request.UserRequest": {
+        "request.UserVerifyOTPRequest": {
             "type": "object",
             "properties": {
-                "age": {
-                    "type": "integer",
-                    "example": 20
-                },
                 "email": {
                     "type": "string",
                     "example": "hanisahfildza@gmail.com"
                 },
-                "fullname": {
+                "otp": {
                     "type": "string",
-                    "example": "hanisah fildza annafisah"
-                },
-                "password": {
-                    "type": "string",
-                    "example": "password123456789"
-                },
-                "username": {
-                    "type": "string",
-                    "example": "fildzaanf"
+                    "example": "7777"
                 }
             }
         },

@@ -35,7 +35,7 @@ func NewMediaSocialHandler(mediaSocialService entity.MediaSocialServiceInterface
 // @Failure 401 {object} responses.TErrorResponse
 // @Router /media-social [post]
 func (mh *mediaSocialHandler) CreateMediaSocial(c *gin.Context) {
-	userID, role, errExtract := middlewares.VerifyToken(c)
+	userID, role, errExtract := middlewares.ExtractToken(c)
 	if errExtract != nil {
 		c.JSON(http.StatusUnauthorized, responses.ErrorResponse(errExtract.Error()))
 		return
@@ -80,7 +80,7 @@ func (mh *mediaSocialHandler) CreateMediaSocial(c *gin.Context) {
 // @Router /media-social [get]
 func (mh *mediaSocialHandler) GetAllMediaSocials(c *gin.Context) {
 
-	userID, role, errExtract := middlewares.VerifyToken(c)
+	userID, role, errExtract := middlewares.ExtractToken(c)
 	if errExtract != nil {
 		c.JSON(http.StatusUnauthorized, responses.ErrorResponse(errExtract.Error()))
 		return
@@ -120,7 +120,7 @@ func (mh *mediaSocialHandler) GetAllMediaSocials(c *gin.Context) {
 func (mh *mediaSocialHandler) GetMediaSocialByID(c *gin.Context) {
 	mediaSocialID := c.Param("medsos_id")
 
-	userID, role, errExtract := middlewares.VerifyToken(c)
+	userID, role, errExtract := middlewares.ExtractToken(c)
 	if errExtract != nil {
 		c.JSON(http.StatusUnauthorized, responses.ErrorResponse(errExtract.Error()))
 		return
@@ -163,7 +163,7 @@ func (mh *mediaSocialHandler) GetMediaSocialByID(c *gin.Context) {
 func (mh *mediaSocialHandler) UpdateMediaSocialByID(c *gin.Context) {
 	mediaSocialID := c.Param("medsos_id")
 
-	userID, role, errExtract := middlewares.VerifyToken(c)
+	userID, role, errExtract := middlewares.ExtractToken(c)
 	if errExtract != nil {
 		c.JSON(http.StatusUnauthorized, responses.ErrorResponse(errExtract.Error()))
 		return
@@ -219,7 +219,7 @@ func (mh *mediaSocialHandler) UpdateMediaSocialByID(c *gin.Context) {
 func (mh *mediaSocialHandler) DeleteMediaSocialByID(c *gin.Context) {
 	mediaSocialID := c.Param("medsos_id")
 
-	userID, role, errExtract := middlewares.VerifyToken(c)
+	userID, role, errExtract := middlewares.ExtractToken(c)
 	if errExtract != nil {
 		c.JSON(http.StatusUnauthorized, responses.ErrorResponse(errExtract.Error()))
 		return

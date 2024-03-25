@@ -5,3 +5,8 @@ type PhotoRequest struct {
 	Title    string `json:"title" form:"title" example:"title photo"`
 	Caption  string `json:"caption" form:"caption" example:"this is example caption photo"`
 }
+
+type PhotoUpdateRequest struct {
+	Title    string `json:"title" form:"title" example:"title photo"`
+	Caption  string `json:"caption" form:"caption" example:"this is example caption photo"`
+}

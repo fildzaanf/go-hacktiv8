@@ -36,7 +36,7 @@ func NewPhotoHandler(photoService entity.PhotoServiceInterface) *photoHandler {
 // @Router /photos [post]
 func (ph *photoHandler) CreatePhoto(c *gin.Context) {
 
-	userID, role, errExtract := middlewares.VerifyToken(c)
+	userID, role, errExtract := middlewares.ExtractToken(c)
 	if errExtract != nil {
 		c.JSON(http.StatusUnauthorized, responses.ErrorResponse(errExtract.Error()))
 		return
@@ -81,7 +81,7 @@ func (ph *photoHandler) CreatePhoto(c *gin.Context) {
 // @Router /photos [get]
 func (ph *photoHandler) GetAllPhotos(c *gin.Context) {
 
-	userID, role, errExtract := middlewares.VerifyToken(c)
+	userID, role, errExtract := middlewares.ExtractToken(c)
 	if errExtract != nil {
 		c.JSON(http.StatusUnauthorized, responses.ErrorResponse(errExtract.Error()))
 		return
@@ -124,7 +124,7 @@ func (ph *photoHandler) GetAllPhotos(c *gin.Context) {
 func (ph *photoHandler) GetPhotoByID(c *gin.Context) {
 	photoID := c.Param("photo_id")
 
-	userID, role, errExtract := middlewares.VerifyToken(c)
+	_, role, errExtract := middlewares.ExtractToken(c)
 	if errExtract != nil {
 		c.JSON(http.StatusUnauthorized, responses.ErrorResponse(errExtract.Error()))
 		return
@@ -138,11 +138,6 @@ func (ph *photoHandler) GetPhotoByID(c *gin.Context) {
 	photo, errGetID := ph.photoService.GetPhotoByID(photoID)
 	if errGetID != nil {
 		c.JSON(http.StatusBadRequest, responses.ErrorResponse(errGetID.Error()))
-		return
-	}
-
-	if userID != photo.UserID {
-		c.JSON(http.StatusUnauthorized, responses.ErrorResponse("not authorized to access this resource"))
 		return
 	}
 
@@ -167,7 +162,7 @@ func (ph *photoHandler) GetPhotoByID(c *gin.Context) {
 func (ph *photoHandler) UpdatePhotoByID(c *gin.Context) {
 	photoID := c.Param("photo_id")
 
-	userID, role, errExtract := middlewares.VerifyToken(c)
+	userID, role, errExtract := middlewares.ExtractToken(c)
 	if errExtract != nil {
 		c.JSON(http.StatusUnauthorized, responses.ErrorResponse(errExtract.Error()))
 		return
@@ -189,7 +184,7 @@ func (ph *photoHandler) UpdatePhotoByID(c *gin.Context) {
 		return
 	}
 
-	photoRequest := request.PhotoRequest{}
+	photoRequest := request.PhotoUpdateRequest{}
 
 	errBind := c.ShouldBind(&photoRequest)
 	if errBind != nil {
@@ -197,7 +192,7 @@ func (ph *photoHandler) UpdatePhotoByID(c *gin.Context) {
 		return
 	}
 
-	photoCore := request.PhotoRequestToPhotoCore(photoRequest)
+	photoCore := request.PhotoUpdateRequestToPhotoCore(photoRequest)
 
 	photo, errUpdate := ph.photoService.UpdatePhotoByID(photoID, photoCore)
 	if errUpdate != nil {
@@ -223,7 +218,7 @@ func (ph *photoHandler) UpdatePhotoByID(c *gin.Context) {
 func (ph *photoHandler) DeletePhotoByID(c *gin.Context) {
 	photoID := c.Param("photo_id")
 
-	userID, role, errExtract := middlewares.VerifyToken(c)
+	userID, role, errExtract := middlewares.ExtractToken(c)
 	if errExtract != nil {
 		c.JSON(http.StatusUnauthorized, responses.ErrorResponse(errExtract.Error()))
 		return

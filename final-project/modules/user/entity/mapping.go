@@ -9,19 +9,21 @@ import (
 
 func UserCoreToUserModel(userCore User) model.User {
 	userModel := model.User{
-		ID:           userCore.ID,
-		Fullname:     userCore.Fullname,
-		Email:        userCore.Email,
-		Password:     userCore.Password,
-		Role:         userCore.Role,
-		Username:     userCore.Username,
-		Age:          userCore.Age,
-		Photos:       ep.ListPhotoCoreToPhotoModel(userCore.Photos),
-		Comments:     ec.ListCommentCoreToCommentModel(userCore.Comments),
-		MediaSocials: em.ListMediaSocialCoreToMediaSocialModel(userCore.MediaSocials),
-		CreatedAt:    userCore.CreatedAt,
-		UpdatedAt:    userCore.UpdatedAt,
-		DeletedAt:    userCore.DeletedAt,
+		ID:            userCore.ID,
+		Fullname:      userCore.Fullname,
+		Email:         userCore.Email,
+		Password:      userCore.Password,
+		Role:          userCore.Role,
+		Username:      userCore.Username,
+		Age:           userCore.Age,
+		OTP:           userCore.OTP,
+		OTPExpiration: userCore.OTPExpiration,
+		CreatedAt:     userCore.CreatedAt,
+		UpdatedAt:     userCore.UpdatedAt,
+		DeletedAt:     userCore.DeletedAt,
+		Photos:        ep.ListPhotoCoreToPhotoModel(userCore.Photos),
+		Comments:      ec.ListCommentCoreToCommentModel(userCore.Comments),
+		MediaSocials:  em.ListMediaSocialCoreToMediaSocialModel(userCore.MediaSocials),
 	}
 	return userModel
 }
@@ -37,19 +39,21 @@ func ListUserCoreToUserModel(userCore []User) []model.User {
 
 func UserModelToUserCore(userModel model.User) User {
 	userCore := User{
-		ID:           userModel.ID,
-		Fullname:     userModel.Fullname,
-		Email:        userModel.Email,
-		Password:     userModel.Password,
-		Role:         userModel.Role,
-		Age:          userModel.Age,
-		Username:     userModel.Username,
-		Photos:       ep.ListPhotoModelToPhotoCore(userModel.Photos),
-		Comments:     ec.ListCommentModelToCommentCore(userModel.Comments),
-		MediaSocials: em.ListMediaSocialModelToMediaSocialCore(userModel.MediaSocials),
-		CreatedAt:    userModel.CreatedAt,
-		UpdatedAt:    userModel.UpdatedAt,
-		DeletedAt:    userModel.DeletedAt,
+		ID:            userModel.ID,
+		Fullname:      userModel.Fullname,
+		Email:         userModel.Email,
+		Password:      userModel.Password,
+		Role:          userModel.Role,
+		Age:           userModel.Age,
+		Username:      userModel.Username,
+		OTP:           userModel.OTP,
+		OTPExpiration: userModel.OTPExpiration,
+		CreatedAt:     userModel.CreatedAt,
+		UpdatedAt:     userModel.UpdatedAt,
+		DeletedAt:     userModel.DeletedAt,
+		Photos:        ep.ListPhotoModelToPhotoCore(userModel.Photos),
+		Comments:      ec.ListCommentModelToCommentCore(userModel.Comments),
+		MediaSocials:  em.ListMediaSocialModelToMediaSocialCore(userModel.MediaSocials),
 	}
 	return userCore
 }

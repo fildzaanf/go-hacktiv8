@@ -18,12 +18,12 @@ func NewCommentService(commentRepository entity.CommentRepositoryInterface) enti
 
 func (cs *commentService) CreateComment(photoID string, commentCore entity.Comment) (entity.Comment, error) {
 
-	errEmpty := validator.IsDataEmpty(commentCore.Message)
+	errEmpty := validator.IsDataEmpty([]string{"message"}, commentCore.Message)
 	if errEmpty != nil {
 		return entity.Comment{}, errEmpty
-	}
+	}	
 
-	errLength := validator.IsMaxLengthValid(commentCore.Message, 100)
+	errLength := validator.IsMaxLengthValid(100, map[string]string{"message":commentCore.Message})
 	if errLength != nil {
 		return entity.Comment{}, errLength
 	}

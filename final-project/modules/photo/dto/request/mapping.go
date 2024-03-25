@@ -9,3 +9,11 @@ func PhotoRequestToPhotoCore(request PhotoRequest) entity.Photo {
 		Caption:  request.Caption,
 	}
 }
+
+func PhotoUpdateRequestToPhotoCore(request PhotoUpdateRequest) entity.Photo {
+	return entity.Photo{
+		Title:    request.Title,
+		Caption:  request.Caption,
+	}
+}
+

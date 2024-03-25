@@ -15,7 +15,7 @@ func MediaSocialRoutes(r *gin.RouterGroup, db *gorm.DB) {
 	medsosService := service.NewMediaSocialService(medsosRepository)
 	medsosHandler := handler.NewMediaSocialHandler(medsosService)
 
-	medsos := r.Group("/media-socials", middlewares.JWTMiddleware())
+	medsos := r.Group("/media-socials", middlewares.JWTMiddleware(false))
 	{
 		medsos.POST("", medsosHandler.CreateMediaSocial)
 		medsos.GET("", medsosHandler.GetAllMediaSocials)

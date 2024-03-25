@@ -10,19 +10,21 @@ import (
 )
 
 type User struct {
-	ID           string
-	Username     string
-	Fullname     string
-	Email        string
-	Password     string
-	Age          int
-	Role         string
-	Photos       []ep.Photo
-	Comments     []ec.Comment
-	MediaSocials []em.MediaSocial
-	CreatedAt    time.Time
-	UpdatedAt    time.Time
-	DeletedAt    gorm.DeletedAt
+	ID              string
+	Username        string
+	Fullname        string
+	Email           string
+	Password        string
+	ConfirmPassword string
+	NewPassword     string
+	Age             int
+	Role            string
+	OTP             string
+	OTPExpiration   int64
+	CreatedAt       time.Time
+	UpdatedAt       time.Time
+	DeletedAt       gorm.DeletedAt
+	Photos          []ep.Photo
+	Comments        []ec.Comment
+	MediaSocials    []em.MediaSocial
 }
-
-

@@ -17,7 +17,7 @@ func CommentRoutes(r *gin.RouterGroup, db *gorm.DB) {
 	commentService := service.NewCommentService(commentRepository)
 	commentHandler := handler.NewCommentHandler(commentService)
 
-	comment := r.Group("/comments", middlewares.JWTMiddleware())
+	comment := r.Group("/comments", middlewares.JWTMiddleware(false))
 	{
 		comment.GET("", commentHandler.GetAllComments)
 		comment.POST("/:photo_id", commentHandler.CreateComment)
